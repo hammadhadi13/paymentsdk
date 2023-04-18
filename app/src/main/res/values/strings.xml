@@ -1,0 +1,48 @@
+<resources>
+    <string name="payment_method">Select Payment Method</string>
+    <string name="card">Card</string>
+    <string name="payable_amount">Payable Amount</string>
+    <string name="pay_now">Pay Now</string>
+    <string name="save_card">Saved Cards</string>
+    <string name="card_number">Card Number</string>
+    <string name="expiry">Expiry</string>
+    <string name="cvv">CVV</string>
+    <string name="cancel">Cancel</string>
+    <string name="valid_card">Please enter a valid card number</string>
+    <string name="valid_year">Enter a valid year</string>
+    <string name="cvv_validate">Please enter the CVV code</string>
+    <string name="add_card">ADD NEW CARD</string>
+    <string name="back_payment">Back to payment methods</string>
+    <string name="saved_cards">Select a saved card</string>
+    <string name="payment_success">Paid Successfully</string>
+    <string name="payment_secure">Your payments are processed securely</string>
+    <string name="back_saved">Back to saved cards</string>
+    <string name="name_validate">Enter your name on card</string>
+    <string name="cancel_title">Cancel transaction</string>
+    <string name="cancel_transaction">Are you sure you want to cancel this transaction?</string>
+    <string name="pay">Pay</string>
+    <string name="payment_failed">Payment failed!</string>
+    <string name="no">No</string>
+    <string name="mmyy">MM/YY</string>
+    <string name="number_validate">Enter your card number</string>
+    <string name="name_on_card">Name on Card</string>
+    <string name="ending_in">ending in</string>
+    <string name="yes">Yes</string>
+    <string name="secure_code">Secure Code</string>
+    <string name="exp_validate">Please enter the expiry date</string>
+    <string name="payment_cancelled">Payment cancelled!</string>
+    <string name="payment_error_amount">Transaction amount does not match</string>
+    <string name="payment_error_reference">Reference does not match</string>
+    <string name="_3ds_failed">3DS payment flow failed</string>
+    <string name="payment_processing">Processing payment....</string>
+
+
+    <string name="please_enter_card_number">Please enter card number</string>
+    <string name="invalid_card_number">Invalid card number</string>
+    <string name="please_enter_expiry_date">Please enter expiry date</string>
+    <string name="invalid_expiry_date">Invalid expiry date</string>
+    <string name="please_enter_cvv">Please enter cvv</string>
+    <string name="invalid_cvv">Invalid cvv</string>
+    <string name="enter_name_on_card">Please enter name on card</string>
+    <string name="your_payments_are_processed_securely">Your payments are processed securely</string>
+</resources>

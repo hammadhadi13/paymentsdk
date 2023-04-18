@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="payment_method">اختر طريقة الدفع</string>
+    <string name="card">البطاقة</string>
+    <string name="payable_amount">المبلغ المستحق</string>
+    <string name="pay_now">ادفع الآن</string>
+    <string name="save_card">البطاقات المحفوظة</string>
+    <string name="card_number">رقم البطاقة</string>
+    <string name="expiry">تاريخ انتهاء الصلاحية</string>
+    <string name="cvv">CVV</string>
+    <string name="cancel">إلغاء</string>
+    <string name="valid_card">الرجاء إدخال رقم بطاقة صحيح</string>
+    <string name="valid_year">أدخِل سنة صحيحة</string>
+    <string name="cvv_validate">الرجاء إدخال رمز CVV</string>
+    <string name="add_card">أضف بطاقة جديدة</string>
+    <string name="back_payment">العودة إلى طرق الدفع</string>
+    <string name="saved_cards">حدد بطاقة محفوظة</string>
+    <string name="payment_success">الدفع بنجاح</string>
+    <string name="payment_secure">تتم معالجة مدفوعاتك بشكل آمن</string>
+    <string name="back_saved">رجوع إلى البطاقات المحفوظة</string>
+    <string name="name_validate">أدخل اسمك على البطاقة</string>
+    <string name="cancel_title">إلغاء الصفقة</string>
+    <string name="cancel_transaction">هل أنت متأكد من إلغاء الطلبية؟</string>
+    <string name="pay">يدفع</string>
+    <string name="payment_failed">دفع باءت بالفشل</string>
+    <string name="no">لا</string>
+    <string name="mmyy">MM/YY</string>
+    <string name="number_validate">أدخل رقم بطاقتك</string>
+    <string name="name_on_card">الاسم على البطاقة</string>
+    <string name="ending_in">تنتهي في</string>
+    <string name="yes">أجل</string>
+    <string name="secure_code">كود آمن</string>
+    <string name="exp_validate">الرجاء إدخال تاريخ انتهاء الصلاحية.</string>
+    <string name="payment_cancelled">تم إلغاء الدفع</string>
+    <string name="payment_error_amount">مبلغ الصفقة غير متطابق</string>
+    <string name="payment_error_reference">المرجع لا يتطابق</string>
+    <string name="_3ds_failed">فشل تدفق دفع 3DS</string>
+    <string name="payment_processing">معالجة الدفع ....</string>
+
+
+
+    <string name="please_enter_card_number">الرجاء إدخال رقم البطاقة</string>
+    <string name="invalid_card_number">رقم البطاقة غير صالح</string>
+    <string name="please_enter_expiry_date">الرجاء إدخال تاريخ انتهاء الصلاحية</string>
+    <string name="invalid_expiry_date">تاريخ انتهاء الصلاحية غير صالح</string>
+    <string name="please_enter_cvv">الرجاء إدخال كود التحقق من البطاقة</string>
+    <string name="invalid_cvv"> كود التحقق من البطاقة غير صالح</string>
+    <string name="enter_name_on_card">الرجاء إدخال الاسم الموجود على البطاقة</string>
+    <string name="your_payments_are_processed_securely">تتم معالجة مدفوعاتك بشكل آمن</string>
+
+
+</resources>
