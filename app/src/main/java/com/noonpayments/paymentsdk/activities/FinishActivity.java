@@ -61,7 +61,6 @@ public class FinishActivity extends BaseActivity {
     NoonPaymentsUI userUI;
     NoonPaymentsData data;
     NoonPaymentsResponse noonPaymentsResponse;
-    Helper helper = new Helper();
     RelativeLayout dialogMode;
     TextView txtMessage1, txtMessage2, txtPaySecure;
     ImageView viewStatus, viewLogo;

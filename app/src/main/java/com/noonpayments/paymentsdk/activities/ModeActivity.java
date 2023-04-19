@@ -34,7 +34,6 @@ public class ModeActivity extends BaseActivity {
     NoonPaymentsUI userUI;
     NoonPaymentsData data;
     ArrayList<NoonPaymentsCard> savedCards;
-    Helper helper = new Helper();
     RelativeLayout dialogMode, ccBox, paymentBox;
     TextView txtCard, txtPay, txtAmount, txtSelect, txtPaySecure;
     ImageButton btnCancel;
@@ -49,7 +48,9 @@ public class ModeActivity extends BaseActivity {
         setFinishOnTouchOutside(false);
 
         // get context to set language...
-        language = getIntent().getStringExtra("lang");
+        if(getIntent().getStringExtra("lang") != null) {
+            language = getIntent().getStringExtra("lang");
+        }
         context = setLocale(this, language);
 
         Window window = getWindow();
@@ -201,8 +202,8 @@ public class ModeActivity extends BaseActivity {
         gd.setCornerRadius(rad);
         gd.setStroke(2, borderColor);
         ccBox.setBackground(gd);
-        int paddingLR = helper.GetPixelsFromDP(this, 20);
-        int paddingTB = helper.GetPixelsFromDP(this, 14);
+        int paddingLR = Helper.GetPixelsFromDP(this, 20);
+        int paddingTB = Helper.GetPixelsFromDP(this, 14);
         ccBox.setPadding(paddingTB, paddingLR, paddingTB, paddingTB);
     }
 

@@ -43,7 +43,6 @@ public class CardActivity extends BaseActivity {
     NoonPaymentsUI userUI;
     NoonPaymentsData data;
     ArrayList<NoonPaymentsCard> savedCards;
-    Helper helper = new Helper();
     RelativeLayout dialogMode, listBox, paymentBox, paynowBox;
     TextView txtBack, txtPay, txtAmount, txtPayNow, txtSelectCard;
     ImageView viewArrowBack, viewLogo;
@@ -165,22 +164,19 @@ public class CardActivity extends BaseActivity {
             View v = vi.inflate(R.layout.card_layout, null);
             RadioButton rb = (RadioButton) v.findViewById(R.id.rdoCard);
             rb.setTag(index);
-            rb.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (rbSelected != null) {
-                        rbSelected.setChecked(false);
-                    }
-                    if (selectedCard != -1) {
-                        edtCVVList.get(selectedCard).setText("");
-                        edtCVVList.get(selectedCard).setEnabled(false);
-                        edtCVVList.get(selectedCard).setBackgroundResource(R.drawable.roundtextbox);
-                    }
-                    rbSelected = (RadioButton) view;
-                    selectedCard = (Integer) rbSelected.getTag();
-                    edtCVVList.get(selectedCard).setEnabled(true);
+            rb.setOnClickListener(view -> {
+                if (rbSelected != null) {
+                    rbSelected.setChecked(false);
+                }
+                if (selectedCard != -1) {
+                    edtCVVList.get(selectedCard).setText("");
+                    edtCVVList.get(selectedCard).setEnabled(false);
                     edtCVVList.get(selectedCard).setBackgroundResource(R.drawable.roundtextbox);
                 }
+                rbSelected = (RadioButton) view;
+                selectedCard = (Integer) rbSelected.getTag();
+                edtCVVList.get(selectedCard).setEnabled(true);
+                edtCVVList.get(selectedCard).setBackgroundResource(R.drawable.roundtextbox);
             });
 
             ImageView imgCard = (ImageView) v.findViewById(R.id.viewCard);

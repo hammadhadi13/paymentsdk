@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.noonpayments.paymentsdk.helpers.Helper;
 import com.noonpayments.paymentsdk.models.PaymentMode;
 
 import org.json.JSONObject;
@@ -38,12 +39,15 @@ public class BaseActivity extends AppCompatActivity {
     final OkHttpClient client = new OkHttpClient();
     Handler mainHandler;
 
+    Helper helper ;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mainHandler = new Handler(this.getMainLooper());
+        helper = new Helper();
     }
 
 
