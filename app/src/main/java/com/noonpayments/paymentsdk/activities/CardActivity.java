@@ -32,6 +32,7 @@ import com.noonpayments.paymentsdk.helpers.Helper;
 import com.noonpayments.paymentsdk.models.Language;
 import com.noonpayments.paymentsdk.models.NoonPaymentsCard;
 import com.noonpayments.paymentsdk.models.NoonPaymentsData;
+import com.noonpayments.paymentsdk.models.NoonPaymentsResponse;
 import com.noonpayments.paymentsdk.models.NoonPaymentsSetup;
 import com.noonpayments.paymentsdk.models.NoonPaymentsUI;
 
@@ -314,10 +315,13 @@ public class CardActivity extends BaseActivity {
         String yes = context.getResources().getString(R.string.yes);
         builder.setPositiveButton(yes, (dialog, which) -> {
             callCancelAPI(data.getOrderId());
+            NoonPaymentsResponse response = new NoonPaymentsResponse();
+            response.setDetails(Helper.STATUS_FAILURE, "Payment cancelled by user", "", "");
             Intent resultIntent = new Intent();
-            resultIntent.putExtra("response", "cancel");
+            resultIntent.putExtra("noonresponse", response);
             setResult(Activity.RESULT_OK, resultIntent);
             finish();
+
         });
 
         //No Button
