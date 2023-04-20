@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.google.gson.Gson;
 import com.noonpayments.paymentsdk.R;
 import com.noonpayments.paymentsdk.helpers.Helper;
 import com.noonpayments.paymentsdk.models.NoonPaymentsCard;
@@ -141,7 +142,7 @@ public class ModeActivity extends BaseActivity {
             NoonPaymentsResponse response = new NoonPaymentsResponse();
             response.setDetails(Helper.STATUS_FAILURE, "Payment cancelled by user", "", "");
             Intent resultIntent = new Intent();
-            resultIntent.putExtra("noonresponse", response);
+            resultIntent.putExtra("noonresponse",  new Gson().toJson(response));
             setResult(Activity.RESULT_OK, resultIntent);
             finish();
         });
@@ -158,14 +159,14 @@ public class ModeActivity extends BaseActivity {
         NoonPaymentsResponse response = new NoonPaymentsResponse();
         response.setDetails(Helper.STATUS_FAILURE, "Payment cancelled by user", "", "");
         Intent resultIntent = new Intent();
-        resultIntent.putExtra("noonresponse", response);
+        resultIntent.putExtra("noonresponse", new Gson().toJson(response));
         setResult(Activity.RESULT_OK, resultIntent);
         finish();
     }
 
-    private void doComplete(NoonPaymentsResponse response) {
+    private void doComplete(String response) {
         Intent resultIntent = new Intent();
-        resultIntent.putExtra("noonresponse", response);
+        resultIntent.putExtra("noonresponse",  new Gson().toJson(response));
         setResult(Activity.RESULT_OK, resultIntent);
         finish();
     }
@@ -180,7 +181,7 @@ public class ModeActivity extends BaseActivity {
                 if (response.equals("cancel")) {
                     doCancelNoAlert();
                 } else if (response.equals("complete")) {
-                    NoonPaymentsResponse r = (NoonPaymentsResponse) data.getSerializableExtra("noonresponse");
+                    String r = data.getStringExtra("noonresponse");
                     doComplete(r);
                 }
             }

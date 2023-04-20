@@ -25,6 +25,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.RequiresApi;
 
+import com.google.gson.Gson;
 import com.noonpayments.paymentsdk.R;
 import com.noonpayments.paymentsdk.helpers.Helper;
 import com.noonpayments.paymentsdk.models.NoonPaymentsAPIConfig;
@@ -212,10 +213,10 @@ public class FinishActivity extends BaseActivity {
     private void doComplete() {
         //setup according to api calls etc....
         Intent resultIntent = new Intent();
-        resultIntent.putExtra("noonresponse", noonPaymentsResponse);
+        resultIntent.putExtra("noonresponse",new Gson().toJson( noonPaymentsResponse));
         resultIntent.putExtra("response", "complete");
 
-        NoonPaymentsResponse r = (NoonPaymentsResponse) resultIntent.getSerializableExtra("noonresponse");
+//        NoonPaymentsResponse r = (NoonPaymentsResponse) resultIntent.getSerializableExtra("noonresponse");
         setResult(Activity.RESULT_OK, resultIntent);
         finish();
     }
