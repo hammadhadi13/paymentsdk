@@ -155,7 +155,7 @@ public class ModeActivity extends BaseActivity {
 
     private void doComplete(String response) {
         Intent resultIntent = new Intent();
-        resultIntent.putExtra("noonresponse", new Gson().toJson(response));
+        resultIntent.putExtra("noonresponse", response);
         setResult(Activity.RESULT_OK, resultIntent);
         finish();
     }
@@ -172,8 +172,8 @@ public class ModeActivity extends BaseActivity {
                             if (response.equals("cancel")) {
                                 doCancelNoAlert();
                             } else if (response.equals("complete")) {
-                                String r = data.getStringExtra("noonresponse");
-                                doComplete(r);
+                                String model = data.getStringExtra("noonresponse");
+                                doComplete(model);
                             }
                         }
                     }
@@ -181,22 +181,22 @@ public class ModeActivity extends BaseActivity {
             });
 
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        // check if the request code is same as what is passed  here it is 2
-        if (resultCode == Activity.RESULT_OK && (requestCode == 2001 || requestCode == 2002)) {
-            if (data.hasExtra("response")) {
-                String response = data.getStringExtra("response");
-                if (response.equals("cancel")) {
-                    doCancelNoAlert();
-                } else if (response.equals("complete")) {
-                    String r = data.getStringExtra("noonresponse");
-                    doComplete(r);
-                }
-            }
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        // check if the request code is same as what is passed  here it is 2
+//        if (resultCode == Activity.RESULT_OK && (requestCode == 2001 || requestCode == 2002)) {
+//            if (data.hasExtra("response")) {
+//                String response = data.getStringExtra("response");
+//                if (response.equals("cancel")) {
+//                    doCancelNoAlert();
+//                } else if (response.equals("complete")) {
+//                    String r = data.getStringExtra("noonresponse");
+//                    doComplete(r);
+//                }
+//            }
+//        }
+//    }
 
     @Override
     public void onBackPressed() {

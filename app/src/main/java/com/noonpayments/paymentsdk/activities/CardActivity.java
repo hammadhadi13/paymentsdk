@@ -41,13 +41,6 @@ import java.util.ArrayList;
 public class CardActivity extends BaseActivity {
 
     ArrayList<NoonPaymentsCard> savedCards;
-//    RelativeLayout dialogMode, listBox, paymentBox, paynowBox;
-//    TextView txtBack, txtPay, txtAmount, txtPayNow, txtSelectCard;
-//    ImageView viewArrowBack, viewLogo;
-//    LinearLayout llListContent;
-//    Button btnNewCard;
-//    ImageButton btnCancel;
-
     int selectedCard = -1;
     RadioButton rbSelected = null;
     ArrayList<RadioButton> rbCardList = new ArrayList<RadioButton>();
