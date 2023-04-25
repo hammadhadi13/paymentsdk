@@ -23,6 +23,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 
 import com.noonpayments.paymentsdk.R;
+import com.noonpayments.paymentsdk.Utils.CommonMethods;
+import com.noonpayments.paymentsdk.databinding.ActivityNewCardBinding;
 import com.noonpayments.paymentsdk.helpers.Helper;
 import com.noonpayments.paymentsdk.models.NoonPaymentsData;
 import com.noonpayments.paymentsdk.models.NoonPaymentsSetup;
@@ -33,27 +35,26 @@ import java.util.Calendar;
 
 public class NewCardActivity extends BaseActivity {
 
-    NoonPaymentsSetup setup;
-    NoonPaymentsUI userUI;
-    NoonPaymentsData data;
-    RelativeLayout dialogMode, ccBox, paymentBox, paynowBox;
-    TextView txtBack, txtCardNumber, txtCardName, txtExp, txtCVV, txtPay, txtAmount, txtPayNow, txtAddNewCard,
-            txtCardError, txtExpiryError, txtCVVError, txtCardNameError;
-    EditText edtCardNumber, edtCardName, edtExp, edtCVV;
-    ImageView viewBack, viewCard, viewLogo;
-    CheckBox checkBox;
-    ImageButton btnCancel;
+
+    //    RelativeLayout dialogMode, ccBox, paymentBox, paynowBox;
+//    TextView txtBack, txtCardNumber, txtCardName, txtExp, txtCVV, txtPay, txtAmount, txtPayNow, txtAddNewCard,
+//            txtCardError, txtExpiryError, txtCVVError, txtCardNameError;
+//    EditText edtCardNumber, edtCardName, edtExp, edtCVV;
+//    ImageView viewBack, viewCard, viewLogo;
+//    CheckBox checkBox;
+//    ImageButton btnCancel;
     int validationStatus = 0;
     String validationMessage = "";
     Context context;
     Boolean isSaveCard = true;
-
+    private ActivityNewCardBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(getWindow().FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_new_card);
+        binding = ActivityNewCardBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         setFinishOnTouchOutside(false);
 
         // get context to set language...
@@ -67,176 +68,143 @@ public class NewCardActivity extends BaseActivity {
         //window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        //setup the UI
-        setup = NoonPaymentsSetup.getInstance();
-        userUI = setup.getNoonUI();
-        data = setup.getNoonData();
-
         initView();
-
         initEvents();
 
     }
 
     private void initView() {
-
-        dialogMode = (RelativeLayout) findViewById(R.id.dialogMode);
-        ccBox = findViewById(R.id.cardEntryBox);
-        paymentBox = (RelativeLayout) findViewById(R.id.paymentBox);
-        paynowBox = (RelativeLayout) findViewById(R.id.paynowBox);
-        viewCard = (ImageView) findViewById(R.id.viewCard);
-        viewLogo = (ImageView) findViewById(R.id.viewLogo);
-
-        btnCancel = (ImageButton) findViewById((R.id.btnCancel));
-
-        viewBack = (ImageView) findViewById(R.id.viewArrowBack);
-        txtBack = (TextView) findViewById(R.id.txtBack);
-        txtCardName = (TextView) findViewById(R.id.txtCardName);
-        txtCardNumber = (TextView) findViewById(R.id.txtCardNumber);
-        txtCVV = (TextView) findViewById(R.id.txtCVV);
-        txtExp = (TextView) findViewById(R.id.txtExpiry);
-        txtPay = (TextView) findViewById(R.id.txtPay);
-        txtAmount = (TextView) findViewById(R.id.txtAmount);
-        txtPayNow = (TextView) findViewById(R.id.txtPayNow);
-        txtAddNewCard = (TextView) findViewById(R.id.txtAddNewCard);
-
-        txtCardError = findViewById(R.id.txtCardError);
-        txtExpiryError = findViewById(R.id.txtExpiryError);
-        txtCVVError = findViewById(R.id.txtCVVError);
-        txtCardNameError = findViewById(R.id.txtCardNameError);
-
-
-        edtCardName = (EditText) findViewById(R.id.edtCardName);
-        edtCardNumber = (EditText) findViewById(R.id.edtCardNumber);
-        edtExp = (EditText) findViewById(R.id.edtExpiry);
-        edtCVV = (EditText) findViewById(R.id.edtCVV);
-
-        checkBox = findViewById(R.id.saveCardcb);
-
-        setText();
-
-        paynowBox.setEnabled(false);
-
         //set text
-        if (setup.getNoonSavedCards().size() > 0)
-            txtBack.setText(context.getResources().getString(R.string.back_saved));
-        else
-            txtBack.setText(context.getResources().getString(R.string.back_payment));
-
-        txtCardName.setText(context.getResources().getString(R.string.name_on_card));
-        txtCardNumber.setText(context.getResources().getString(R.string.card_number));
-        txtCVV.setText(context.getResources().getString(R.string.cvv));
-        txtExp.setText(context.getResources().getString(R.string.expiry));
-
-        txtPayNow.setText(context.getResources().getString(R.string.pay_now));
-        txtPay.setText(context.getResources().getString(R.string.payable_amount));
-
-        txtAddNewCard.setText(context.getResources().getString(R.string.add_card));
-        txtAmount.setText(data.getDisplayAmount(userUI.getLanguage()));
-
-        //set hints
-        edtCardName.setHint(context.getResources().getString(R.string.name_validate));
-        edtCardNumber.setHint(context.getResources().getString(R.string.number_validate));
-        edtExp.setHint(context.getResources().getString(R.string.mmyy));
-        edtCVV.setHint(context.getResources().getString(R.string.secure_code));
-
-        //colors & icons
-        userUI.setupDialog(this, dialogMode);
-        userUI.setupPaynow(this, paymentBox, paynowBox, txtPay, txtAmount, txtPayNow);
-        userUI.setupBox(this, ccBox, 2);
-        userUI.setupLogo(viewLogo);
-
+        setText();
         //text colours
         setTextColours();
-
     }
 
     private void setText() {
 
+        binding.paynowBox.setEnabled(false);
+
+        if (setup.getNoonSavedCards().size() > 0)
+            binding.txtBack.setText(context.getResources().getString(R.string.back_saved));
+        else
+            binding.txtBack.setText(context.getResources().getString(R.string.back_payment));
+
+        binding.txtCardName.setText(context.getResources().getString(R.string.name_on_card));
+        binding.txtCardNumber.setText(context.getResources().getString(R.string.card_number));
+        binding.txtCVV.setText(context.getResources().getString(R.string.cvv));
+        binding.txtExpiry.setText(context.getResources().getString(R.string.expiry));
+
+        binding.txtPayNow.setText(context.getResources().getString(R.string.pay_now));
+        binding.txtPay.setText(context.getResources().getString(R.string.payable_amount));
+
+        binding.txtAddNewCard.setText(context.getResources().getString(R.string.add_card));
+        binding.txtAmount.setText(data.getDisplayAmount(userUI.getLanguage()));
+
+        //set hints
+        binding.edtCardName.setHint(context.getResources().getString(R.string.name_validate));
+        binding.edtCardNumber.setHint(context.getResources().getString(R.string.number_validate));
+        binding.edtExpiry.setHint(context.getResources().getString(R.string.mmyy));
+        binding.edtCVV.setHint(context.getResources().getString(R.string.secure_code));
+
+        //colors & icons
+        userUI.setupDialog(this, binding.dialogMode);
+        userUI.setupPaynow(this, binding.paymentBox, binding.paynowBox, binding.txtPay, binding.txtAmount, binding.txtPayNow);
+        userUI.setupBox(this, binding.cardEntryBox, 2);
+        userUI.setupLogo(binding.viewLogo);
+
+    }
+    private void setTextColours() {
+        //text colours
+        binding.txtBack.setTextColor(userUI.getPaymentOptionHeadingForeground());
+
+        int textColour1 = userUI.getBoxForegroundColor();
+        binding.txtCardNumber.setTextColor(textColour1);
+        binding.txtCardName.setTextColor(textColour1);
+        binding.txtCVV.setTextColor(textColour1);
+        binding.txtExpiry.setTextColor(textColour1);
+        binding.txtAddNewCard.setTextColor(textColour1);
     }
 
     private void initEvents() {
-        paynowBox.setOnClickListener(view -> doPayment());
+        binding.paynowBox.setOnClickListener(view -> doPayment());
 
-        txtBack.setOnClickListener(view -> doBack());
+        binding.txtBack.setOnClickListener(view -> doBack());
 
-        viewBack.setOnClickListener(view -> doBack());
+        binding.viewArrowBack.setOnClickListener(view -> doBack());
 
-        btnCancel.setOnClickListener(view -> doCancel());
+        binding.btnCancel.setOnClickListener(view -> doCancel());
 
-
-        checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        binding.saveCardcb.setOnCheckedChangeListener((buttonView, isChecked) -> {
             isSaveCard = isChecked;
 
         });
 
-        edtCardNumber.setOnFocusChangeListener((v, hasFocus) -> {
+        binding.edtCardNumber.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
-                String errorMsg = checkCardNumberValidation(edtCardNumber.getText().toString());
-                txtCardError.setText(errorMsg);
-                txtCardError.setVisibility(View.VISIBLE);
-                edtCardNumber.setBackgroundResource(R.drawable.roundtextboxred);
+                String errorMsg = checkCardNumberValidation(binding.edtCardNumber.getText().toString());
+                binding.txtCardError.setText(errorMsg);
+                binding.txtCardError.setVisibility(View.VISIBLE);
+                binding.edtCardNumber.setBackgroundResource(R.drawable.roundtextboxred);
                 if (errorMsg.isEmpty()) {
-                    txtCardError.setVisibility(View.GONE);
-                    edtCardNumber.setBackgroundResource(R.drawable.roundtextbox);
+                    binding.txtCardError.setVisibility(View.GONE);
+                    binding.edtCardNumber.setBackgroundResource(R.drawable.roundtextbox);
 
                 }
-                if (!edtCVV.getText().toString().isEmpty()) {
-                    errorMsg = cvvValidation(edtCVV.getText().toString(), edtCardNumber.getText().toString());
+                if (!binding.edtCVV.getText().toString().isEmpty()) {
+                    errorMsg = cvvValidation(binding.edtCVV.getText().toString(), binding.edtCardNumber.getText().toString());
                     if (errorMsg.isEmpty()) {
-                        edtCVV.setBackgroundResource(R.drawable.roundtextbox);
-                        txtCVVError.setVisibility(View.GONE);
+                        binding.edtCVV.setBackgroundResource(R.drawable.roundtextbox);
+                        binding.txtCVVError.setVisibility(View.GONE);
                     } else {
-                        txtCVVError.setText(errorMsg);
-                        txtCVVError.setVisibility(View.VISIBLE);
-                        edtCVV.setBackgroundResource(R.drawable.roundtextboxred);
+                        binding.txtCVVError.setText(errorMsg);
+                        binding.txtCVVError.setVisibility(View.VISIBLE);
+                        binding.edtCVV.setBackgroundResource(R.drawable.roundtextboxred);
                     }
                 }
             }
         });
 
-        edtExp.setOnFocusChangeListener(((v, hasFocus) -> {
+        binding.edtExpiry.setOnFocusChangeListener(((v, hasFocus) -> {
             if (!hasFocus) {
-                String errorMsg = checkExpiryDateValidation(edtExp.getText().toString());
-                txtExpiryError.setText(errorMsg);
-                txtExpiryError.setVisibility(View.VISIBLE);
-                edtExp.setBackgroundResource(R.drawable.roundtextboxred);
+                String errorMsg = checkExpiryDateValidation(binding.edtExpiry.getText().toString());
+                binding.txtExpiryError.setText(errorMsg);
+                binding.txtExpiryError.setVisibility(View.VISIBLE);
+                binding.edtExpiry.setBackgroundResource(R.drawable.roundtextboxred);
                 if (errorMsg.isEmpty()) {
-                    txtExpiryError.setVisibility(View.GONE);
-                    edtExp.setBackgroundResource(R.drawable.roundtextbox);
+                    binding.txtExpiryError.setVisibility(View.GONE);
+                    binding.edtExpiry.setBackgroundResource(R.drawable.roundtextbox);
                 }
             }
         }));
 
-        edtCVV.setOnFocusChangeListener(((v, hasFocus) -> {
+        binding.edtCVV.setOnFocusChangeListener(((v, hasFocus) -> {
             if (!hasFocus) {
-                String errorMsg = cvvValidation(edtCVV.getText().toString(), edtCardNumber.getText().toString());
-                txtCVVError.setText(errorMsg);
-                txtCVVError.setVisibility(View.VISIBLE);
-                edtCVV.setBackgroundResource(R.drawable.roundtextboxred);
+                String errorMsg = cvvValidation(binding.edtCVV.getText().toString(), binding.edtCardNumber.getText().toString());
+                binding.txtCVVError.setText(errorMsg);
+                binding.txtCVVError.setVisibility(View.VISIBLE);
+                binding.edtCVV.setBackgroundResource(R.drawable.roundtextboxred);
                 if (errorMsg.isEmpty()) {
-                    edtCVV.setBackgroundResource(R.drawable.roundtextbox);
-                    txtCVVError.setVisibility(View.GONE);
+                    binding.edtCVV.setBackgroundResource(R.drawable.roundtextbox);
+                    binding.txtCVVError.setVisibility(View.GONE);
                 }
             }
         }));
 
-        edtCardName.setOnFocusChangeListener(((v, hasFocus) -> {
+        binding.edtCardName.setOnFocusChangeListener(((v, hasFocus) -> {
             if (!hasFocus) {
-                if (edtCardName.getText().toString().isEmpty()) {
-                    txtCardNameError.setText(context.getResources().getString(R.string.enter_name_on_card));
-                    txtCardNameError.setVisibility(View.VISIBLE);
-                    edtCardName.setBackgroundResource(R.drawable.roundtextboxred);
+                if (binding.edtCardName.getText().toString().isEmpty()) {
+                    binding.txtCardNameError.setText(context.getResources().getString(R.string.enter_name_on_card));
+                    binding.txtCardNameError.setVisibility(View.VISIBLE);
+                    binding.edtCardName.setBackgroundResource(R.drawable.roundtextboxred);
                 } else {
-                    txtCardNameError.setVisibility(View.GONE);
-                    edtCardName.setBackgroundResource(R.drawable.roundtextbox);
+                    binding.txtCardNameError.setVisibility(View.GONE);
+                    binding.edtCardName.setBackgroundResource(R.drawable.roundtextbox);
 
                 }
             }
         }));
 
-        edtCardNumber.addTextChangedListener(new TextWatcher() {
-
+        binding.edtCardNumber.addTextChangedListener(new TextWatcher() {
             private static final int TOTAL_SYMBOLS = 24; // size of pattern 0000-0000-0000-0000-0000
             private static final int TOTAL_DIGITS = 20; // max numbers of digits in pattern: 0000 x 4
             private static final int DIVIDER_MODULO = 5; // means divider position is every 5th symbol beginning with 1
@@ -249,12 +217,13 @@ public class NewCardActivity extends BaseActivity {
                     s.replace(0, s.length(), buildCorrectString(getDigitArray(s, TOTAL_DIGITS), DIVIDER_POSITION, DIVIDER));
                 }
                 String cardNumber = s.toString();
-                validateEntry(edtCardName.getText().toString(), cardNumber, edtExp.getText().toString(), edtCVV.getText().toString());
+                validateEntry(binding.edtCardName.getText().toString(), cardNumber, binding.edtExpiry.getText().toString(),
+                        binding.edtCVV.getText().toString());
                 enablePaymentButton();
 
                 if (s.length() == 0) {
-                    edtCVV.setText("");
-                    edtExp.setText("");
+                    binding.edtCVV.setText("");
+                    binding.edtExpiry.setText("");
                 }
             }
 
@@ -300,40 +269,40 @@ public class NewCardActivity extends BaseActivity {
                 String cardType = Helper.getCardType(cn, data.getCurrency());
                 switch (cardType) {
                     case Helper.CARD_MADA:
-                        viewCard.setImageResource(R.drawable.ic_mada);
+                        binding.viewCard.setImageResource(R.drawable.ic_mada);
                         break;
                     case Helper.CARD_VISA:
-                        viewCard.setImageResource(R.drawable.ic_visa);
+                        binding.viewCard.setImageResource(R.drawable.ic_visa);
                         break;
                     case Helper.CARD_MC:
-                        viewCard.setImageResource(R.drawable.ic_mastercard);
+                        binding.viewCard.setImageResource(R.drawable.ic_mastercard);
                         break;
                     case Helper.CARD_AMEX:
-                        viewCard.setImageResource(R.drawable.ic_americanexpress);
+                        binding.viewCard.setImageResource(R.drawable.ic_americanexpress);
                         break;
                     case Helper.CARD_MEEZA:
-                        viewCard.setImageResource(R.drawable.meeza);
+                        binding.viewCard.setImageResource(R.drawable.meeza);
                         break;
                     case Helper.CARD_MAESTRO:
-                        viewCard.setImageResource(R.drawable.maestro);
+                        binding.viewCard.setImageResource(R.drawable.maestro);
                         break;
                     case Helper.CARD_UNIONPAY:
-                        viewCard.setImageResource(R.drawable.unionpay);
+                        binding.viewCard.setImageResource(R.drawable.unionpay);
                         break;
                     case Helper.CARD_DISCOVER:
-                        viewCard.setImageResource(R.drawable.dicover);
+                        binding.viewCard.setImageResource(R.drawable.dicover);
                         break;
                     case Helper.CARD_JCB:
-                        viewCard.setImageResource(R.drawable.jcb);
+                        binding.viewCard.setImageResource(R.drawable.jcb);
                         break;
                     case Helper.CARD_DINERS:
-                        viewCard.setImageResource(R.drawable.diners);
+                        binding.viewCard.setImageResource(R.drawable.diners);
                         break;
                     case Helper.CARD_OMANNET:
-                        viewCard.setImageResource(R.drawable.omannet);
+                        binding.viewCard.setImageResource(R.drawable.omannet);
                         break;
                     default:
-                        viewCard.setImageResource(R.drawable.ic_genericcard);
+                        binding.viewCard.setImageResource(R.drawable.ic_genericcard);
                         break;
                 }
             }
@@ -352,8 +321,7 @@ public class NewCardActivity extends BaseActivity {
             }
         });
 
-        edtExp.addTextChangedListener(new TextWatcher() {
-
+        binding.edtExpiry.addTextChangedListener(new TextWatcher() {
             private static final int TOTAL_SYMBOLS = 5; // size of pattern 00/00
             private static final int TOTAL_DIGITS = 4; // max numbers of digits in pattern: 00 x 4
             private static final int DIVIDER_MODULO = 3; // means divider position is every 2ns symbol beginning with 1
@@ -366,12 +334,8 @@ public class NewCardActivity extends BaseActivity {
                     s.replace(0, s.length(), buildCorrectString(getDigitArray(s, TOTAL_DIGITS), DIVIDER_POSITION, DIVIDER));
                 }
                 String exp = s.toString();
-                validateEntry(edtCardName.getText().toString(), edtCardNumber.getText().toString(), exp, edtCVV.getText().toString());
-//                if ((validationStatus & 4) > 0) {
-//                    edtExp.setBackgroundResource(R.drawable.roundtextboxred);
-//                } else {
-//                    edtExp.setBackgroundResource(R.drawable.roundtextbox);
-//                }
+                validateEntry(binding.edtCardName.getText().toString(), binding.edtCardNumber.getText().toString(),
+                        exp, binding.edtCVV.getText().toString());
                 enablePaymentButton();
             }
 
@@ -423,15 +387,14 @@ public class NewCardActivity extends BaseActivity {
                 }
                 return digits;
             }
-
         });
 
-        edtCardName.addTextChangedListener(new TextWatcher() {
-
+        binding.edtCardName.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
                 String cName = s.toString();
-                validateEntry(cName, edtCardNumber.getText().toString(), edtExp.getText().toString(), edtCVV.getText().toString());
+                validateEntry(cName, binding.edtCardNumber.getText().toString(), binding.edtExpiry.getText().toString(),
+                        binding.edtCVV.getText().toString());
 //                if ((validationStatus & 1) > 0) {
 //                    edtCardName.setBackgroundResource(R.drawable.roundtextboxred);
 //                } else {
@@ -451,17 +414,12 @@ public class NewCardActivity extends BaseActivity {
             }
         });
 
-        edtCVV.addTextChangedListener(new TextWatcher() {
-
+        binding.edtCVV.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
                 String cvv = s.toString();
-                validateEntry(edtCardName.getText().toString(), edtCardNumber.getText().toString(), edtExp.getText().toString(), cvv);
-//                if ((validationStatus & 8) > 0) {
-//                    edtCVV.setBackgroundResource(R.drawable.roundtextboxred);
-//                } else {
-//                    edtCVV.setBackgroundResource(R.drawable.roundtextbox);
-//                }
+                validateEntry(binding.edtCardName.getText().toString(), binding.edtCardNumber.getText().toString(),
+                        binding.edtExpiry.getText().toString(), cvv);
                 enablePaymentButton();
             }
 
@@ -539,20 +497,20 @@ public class NewCardActivity extends BaseActivity {
     }
 
     private void doPayment() {
-        String cardNumber = edtCardNumber.getText().toString().trim().replace(" ", "");
-        String cardName = edtCardName.getText().toString().trim();
-        String exp = edtExp.getText().toString();
-        String cvv = edtCVV.getText().toString();
+        String cardNumber = binding.edtCardNumber.getText().toString().trim().replace(" ", "");
+        String cardName = binding.edtCardName.getText().toString().trim();
+        String exp = binding.edtExpiry.getText().toString();
+        String cvv = binding.edtCVV.getText().toString();
         String cardType = "";
 
         //validate
         validateEntry(cardName, cardNumber, exp, cvv);
         if (!validationMessage.equals("")) {
             //make the text boxes red
-            edtCardName.setBackgroundResource(((validationStatus & 1) > 0) ? R.drawable.roundtextboxred : R.drawable.roundtextbox);
-            edtCardNumber.setBackgroundResource(((validationStatus & 2) > 0) ? R.drawable.roundtextboxred : R.drawable.roundtextbox);
-            edtExp.setBackgroundResource(((validationStatus & 4) > 0) ? R.drawable.roundtextboxred : R.drawable.roundtextbox);
-            edtCVV.setBackgroundResource(((validationStatus & 8) > 0) ? R.drawable.roundtextboxred : R.drawable.roundtextbox);
+            binding.edtCardName.setBackgroundResource(((validationStatus & 1) > 0) ? R.drawable.roundtextboxred : R.drawable.roundtextbox);
+            binding.edtCardNumber.setBackgroundResource(((validationStatus & 2) > 0) ? R.drawable.roundtextboxred : R.drawable.roundtextbox);
+            binding.edtExpiry.setBackgroundResource(((validationStatus & 4) > 0) ? R.drawable.roundtextboxred : R.drawable.roundtextbox);
+            binding.edtCVV.setBackgroundResource(((validationStatus & 8) > 0) ? R.drawable.roundtextboxred : R.drawable.roundtextbox);
             Toast toast = Toast.makeText(this, validationMessage, Toast.LENGTH_SHORT);
             toast.show();
             return;
@@ -564,7 +522,7 @@ public class NewCardActivity extends BaseActivity {
         in.putExtra("cardname", cardName);
         in.putExtra("exp", exp);
         in.putExtra("cvv", cvv);
-        in.putExtra("isSavedCard",isSaveCard);
+        in.putExtra("isSavedCard", isSaveCard);
         in.putExtra("addnewcard", true);
         in.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivity(in);
@@ -573,13 +531,13 @@ public class NewCardActivity extends BaseActivity {
 
     private void enablePaymentButton() {
         if (validationStatus == 0) {
-            paynowBox.setBackgroundColor(userUI.getPaynowBackgroundColorHighlight());
-            paynowBox.setEnabled(true);
-            txtPayNow.setTextColor(Color.WHITE);
+            binding.paynowBox.setBackgroundColor(userUI.getPaynowBackgroundColorHighlight());
+            binding.paynowBox.setEnabled(true);
+            binding.txtPayNow.setTextColor(Color.WHITE);
         } else {
-            paynowBox.setBackgroundColor(userUI.getPaynowBackgroundColor());
-            paynowBox.setEnabled(false);
-            txtPayNow.setTextColor(userUI.getPaynowForegroundColor());
+            binding.paynowBox.setBackgroundColor(userUI.getPaynowBackgroundColor());
+            binding.paynowBox.setEnabled(false);
+            binding.txtPayNow.setTextColor(userUI.getPaynowForegroundColor());
         }
     }
 
@@ -607,15 +565,7 @@ public class NewCardActivity extends BaseActivity {
             validationMessage += Helper.getLanguageTextByUser(this, "valid_card", userUI.getLanguage(), "") + "\r\n";
 
         } else if (!cardType.equals(Helper.CARD_DINERS) && !cardType.equals(Helper.CARD_MEEZA) && !cardType.equals(Helper.CARD_OMANNET)) {
-            if (cardNumber.isEmpty() || !validateCard(cardNumber)
-                    || (cardType.equals(Helper.CARD_AMEX) && clen != 15 && clen != 18)
-                    || (cardType.equals(Helper.CARD_MADA) && clen != 16)
-                    || (cardType.equals(Helper.CARD_JCB) && clen != 16 && clen != 19 && clen != 23)
-                    || (cardType.equals(Helper.CARD_DISCOVER) && clen != 16 && clen != 19 && clen != 23)
-                    || (cardType.equals(Helper.CARD_MAESTRO) && clen != 16 && clen != 19 && clen != 23)
-                    || (cardType.equals(Helper.CARD_UNIONPAY) && clen != 16 && clen != 19 && clen != 23)
-                    || (cardType.equals(Helper.CARD_MC) && clen != 16 && clen != 19 && clen != 23)
-                    || (cardType.equals(Helper.CARD_VISA) && clen != 16 && clen != 19 && clen != 23)) {
+            if (!validateCard(cardNumber) || cardType.equals(Helper.CARD_AMEX) && clen != 15 && clen != 18 || cardType.equals(Helper.CARD_MADA) && clen != 16 || cardType.equals(Helper.CARD_JCB) && clen != 16 && clen != 19 && clen != 23 || cardType.equals(Helper.CARD_DISCOVER) && clen != 16 && clen != 19 && clen != 23 || cardType.equals(Helper.CARD_MAESTRO) && clen != 16 && clen != 19 && clen != 23 || cardType.equals(Helper.CARD_UNIONPAY) && clen != 16 && clen != 19 && clen != 23 || cardType.equals(Helper.CARD_MC) && clen != 16 && clen != 19 && clen != 23 || cardType.equals(Helper.CARD_VISA) && clen != 16 && clen != 19 && clen != 23) {
                 validationStatus = validationStatus | 2;
                 validationMessage += Helper.getLanguageTextByUser(this, "valid_card", userUI.getLanguage(), "") + "\r\n";
             }
@@ -637,12 +587,11 @@ public class NewCardActivity extends BaseActivity {
             validationStatus = validationStatus | 8;
             validationMessage += Helper.getLanguageTextByUser(this, "cvv_validate", userUI.getLanguage(), "") + "\r\n";
         }
-
     }
 
     private boolean checkExp(String exp) {
-        int expMonth = stringToInteger(exp.substring(0, 2));
-        int expYear = stringToInteger(exp.substring(3, 5)) + 2000;
+        int expMonth = CommonMethods.INSTANCE.stringToInteger(exp.substring(0, 2));
+        int expYear = CommonMethods.INSTANCE.stringToInteger(exp.substring(3, 5)) + 2000;
 
         if (expMonth < 1 || expMonth > 12) {
             return false;
@@ -685,7 +634,6 @@ public class NewCardActivity extends BaseActivity {
     }
 
     private void doBack() {
-
         if (setup.getNoonSavedCards().size() == 0) {
             Intent in = new Intent(this, ModeActivity.class);
             in.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
@@ -730,30 +678,4 @@ public class NewCardActivity extends BaseActivity {
         setResult(Activity.RESULT_OK, resultIntent);
         finish();
     }
-
-
-    private void setTextColours() {
-
-        //text colours
-        txtBack.setTextColor(userUI.getPaymentOptionHeadingForeground());
-
-        int textColour1 = userUI.getBoxForegroundColor();
-        txtCardNumber.setTextColor(textColour1);
-        txtCardName.setTextColor(textColour1);
-        txtCVV.setTextColor(textColour1);
-        txtExp.setTextColor(textColour1);
-        txtAddNewCard.setTextColor(textColour1);
-    }
-
-    private int stringToInteger(String value) {
-        try {
-            int i = 0;
-            i = Integer.parseInt(value);
-
-            return i;
-        } catch (Exception ex) {
-            return -1;
-        }
-    }
-
 }

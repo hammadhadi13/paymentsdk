@@ -38,7 +38,7 @@ public class Helper {
     public static String getLanguageTextByUser(Context context, String key, Language language, String userValue) {
         String message = "";
 
-        if (userValue.isEmpty() == false)
+        if (!userValue.isEmpty())
             return userValue;
 
         if (language == Language.ARABIC)
@@ -214,12 +214,10 @@ public class Helper {
         return cardType;
     }
 
-
     public static boolean isEmpty(String value) {
         boolean isEmpty = false;
         if (value == null || value.isEmpty())
             isEmpty = true;
         return isEmpty;
     }
-
 }

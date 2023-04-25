@@ -27,6 +27,8 @@ import androidx.annotation.RequiresApi;
 
 import com.google.gson.Gson;
 import com.noonpayments.paymentsdk.R;
+import com.noonpayments.paymentsdk.Utils.CommonMethods;
+import com.noonpayments.paymentsdk.databinding.ActivityFinishBinding;
 import com.noonpayments.paymentsdk.helpers.Helper;
 import com.noonpayments.paymentsdk.models.NoonPaymentsAPIConfig;
 import com.noonpayments.paymentsdk.models.NoonPaymentsData;
@@ -34,6 +36,7 @@ import com.noonpayments.paymentsdk.models.NoonPaymentsResponse;
 import com.noonpayments.paymentsdk.models.NoonPaymentsSetup;
 import com.noonpayments.paymentsdk.models.NoonPaymentsUI;
 import com.noonpayments.paymentsdk.models.PaymentMode;
+import com.noonpayments.paymentsdk.models.PaymentStatus;
 import com.noonpayments.paymentsdk.models.PaymentType;
 
 import org.json.JSONArray;
@@ -58,15 +61,6 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class FinishActivity extends BaseActivity {
-    NoonPaymentsSetup setup;
-    NoonPaymentsUI userUI;
-    NoonPaymentsData data;
-    NoonPaymentsResponse noonPaymentsResponse;
-    RelativeLayout dialogMode;
-    TextView txtMessage1, txtMessage2, txtPaySecure;
-    ImageView viewStatus, viewLogo;
-    ImageButton btnCancel;
-    ProgressBar progressBar;
 
     //payment information
     boolean addNewCard = false;
@@ -87,20 +81,20 @@ public class FinishActivity extends BaseActivity {
     String responseCardType = "";
     String responseTransactionId = "";
 
-    public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+    private MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     final OkHttpClient client = new OkHttpClient();
     NoonPaymentsAPIConfig noonPaymentsAPIConfig = new NoonPaymentsAPIConfig();
-
     Handler mainHandler;
     Context context;
-
     ActivityResultLauncher<Intent> finishActivityLauncher;
+    private ActivityFinishBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(getWindow().FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_finish);
+        binding = ActivityFinishBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         setFinishOnTouchOutside(false);
 
         context = setLocale(this, language);
@@ -113,11 +107,6 @@ public class FinishActivity extends BaseActivity {
         //window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        //setup the UI
-        setup = NoonPaymentsSetup.getInstance();
-        userUI = setup.getNoonUI();
-        data = setup.getNoonData();
-        noonPaymentsResponse = new NoonPaymentsResponse();
 
         Bundle extras = getIntent().getExtras();
         addNewCard = extras.getBoolean("addnewcard");
@@ -139,7 +128,6 @@ public class FinishActivity extends BaseActivity {
         initEvents();
 
         mainHandler = new Handler(this.getMainLooper());
-
         //start processing
         processPayment();
 
@@ -147,33 +135,23 @@ public class FinishActivity extends BaseActivity {
     }
 
     private void initView() {
-        dialogMode = (RelativeLayout) findViewById(R.id.dialogMode);
-        txtMessage1 = (TextView) findViewById(R.id.txtMessage1);
-        txtMessage2 = (TextView) findViewById(R.id.txtMessage2);
-        txtPaySecure = (TextView) findViewById(R.id.txtPaySecure);
-        viewLogo = (ImageView) findViewById(R.id.viewLogo);
 
-        viewStatus = (ImageView) findViewById(R.id.viewSuccess);
-        progressBar = (ProgressBar) findViewById(R.id.pgrBar);
+        binding.viewSuccess.setVisibility(View.GONE);
 
-        btnCancel = (ImageButton) findViewById(R.id.btnCancel);
-
-        viewStatus.setVisibility(View.GONE);
-
-        txtPaySecure.setText(context.getResources().getString(R.string.payment_secure));
-        txtMessage1.setText(context.getResources().getString(R.string.payment_processing));
-        txtMessage2.setText("");
+        binding.txtPaySecure.setText(context.getResources().getString(R.string.payment_secure));
+        binding.txtMessage1.setText(context.getResources().getString(R.string.payment_processing));
+        binding.txtMessage2.setText("");
 
         //colors & icons
-        userUI.setupDialog(this, dialogMode);
-        userUI.setupLogo(viewLogo);
-        txtPaySecure.setTextColor(userUI.getFooterForegroundColor());
-        txtMessage1.setTextColor(userUI.getPaymentOptionHeadingForeground());
-        txtMessage2.setTextColor(userUI.getPaymentOptionHeadingForeground());
+        userUI.setupDialog(this, binding.dialogMode);
+        userUI.setupLogo(binding.viewLogo);
+        binding.txtPaySecure.setTextColor(userUI.getFooterForegroundColor());
+        binding.txtMessage1.setTextColor(userUI.getPaymentOptionHeadingForeground());
+        binding.txtMessage2.setTextColor(userUI.getPaymentOptionHeadingForeground());
     }
 
     private void initEvents() {
-        btnCancel.setOnClickListener(view -> doComplete());
+        binding.btnCancel.setOnClickListener(view -> doComplete());
     }
 
     private void do3DSflow(String url3ds) {
@@ -183,7 +161,7 @@ public class FinishActivity extends BaseActivity {
         finishActivityLauncher.launch(in);
     }
 
-     void onActivityResultFunction(){
+    void onActivityResultFunction() {
         finishActivityLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -191,6 +169,7 @@ public class FinishActivity extends BaseActivity {
                     public void onActivityResult(ActivityResult result) {
                         if (result.getResultCode() == Activity.RESULT_OK) {
 
+                            assert result.getData() != null;
                             String rOrderId = result.getData().getStringExtra("orderid");
                             String rMerchantId = result.getData().getStringExtra("merchantid");
 
@@ -213,10 +192,8 @@ public class FinishActivity extends BaseActivity {
     private void doComplete() {
         //setup according to api calls etc....
         Intent resultIntent = new Intent();
-        resultIntent.putExtra("noonresponse",new Gson().toJson( noonPaymentsResponse));
+        resultIntent.putExtra("noonresponse", new Gson().toJson(noonPaymentsResponse));
         resultIntent.putExtra("response", "complete");
-
-//        NoonPaymentsResponse r = (NoonPaymentsResponse) resultIntent.getSerializableExtra("noonresponse");
         setResult(Activity.RESULT_OK, resultIntent);
         finish();
     }
@@ -236,13 +213,13 @@ public class FinishActivity extends BaseActivity {
             String url = NoonPaymentsAPIConfig.NOON_URL_LIVE_ORDER;
             if (data.getPaymentMode() == PaymentMode.TEST)
                 url = NoonPaymentsAPIConfig.NOON_URL_TEST_ORDER;
-            post(url, json);
+            postApi(url, json);
         } catch (Exception ex) {
-            ex.printStackTrace();
+//            ex.printStackTrace();
         }
     }
 
-    private void post(String url, String json) throws IOException {
+    private void postApi(String url, String json) throws IOException {
 
         RequestBody body = RequestBody.create(json, JSON);
         String header = data.getAuthorizationHeader();
@@ -256,9 +233,8 @@ public class FinishActivity extends BaseActivity {
             @Override
             public void onFailure(Call call, IOException e) {
                 // Something went wrong
-                String message = e.getMessage();
-                noonPaymentsResponse.setDetails(Helper.STATUS_FAILURE, message, "", "");
-                displayResult(false, context.getResources().getString(R.string.payment_failed), message);
+                noonPaymentsResponse.setDetails(Helper.STATUS_FAILURE, e.getMessage(), "", "");
+                displayResult(false, context.getResources().getString(R.string.payment_failed), e.getMessage());
             }
 
             @Override
@@ -268,9 +244,8 @@ public class FinishActivity extends BaseActivity {
                     processResponse(responseStr);
                 } else {
                     // Request not successful
-                    String message = response.message();
-                    noonPaymentsResponse.setDetails(Helper.STATUS_FAILURE, message, "", "");
-                    displayResult(false, context.getResources().getString(R.string.payment_failed), message);
+                    noonPaymentsResponse.setDetails(Helper.STATUS_FAILURE, response.message(), "", "");
+                    displayResult(false, context.getResources().getString(R.string.payment_failed), response.message());
                 }
             }
         });
@@ -287,9 +262,8 @@ public class FinishActivity extends BaseActivity {
             @Override
             public void onFailure(Call call, IOException e) {
                 // Something went wrong
-                String message = e.getMessage();
-                noonPaymentsResponse.setDetails(Helper.STATUS_FAILURE, message, "", "");
-                displayResult(false, context.getResources().getString(R.string.payment_failed), message);
+                noonPaymentsResponse.setDetails(Helper.STATUS_FAILURE, e.getMessage(), "", "");
+                displayResult(false, context.getResources().getString(R.string.payment_failed), e.getMessage());
             }
 
             @Override
@@ -299,9 +273,8 @@ public class FinishActivity extends BaseActivity {
                     validateOrder(responseStr);
                 } else {
                     // Request not successful
-                    String message = response.message();
-                    noonPaymentsResponse.setDetails(Helper.STATUS_FAILURE, message, "", "");
-                    displayResult(false, context.getResources().getString(R.string.payment_failed), message);
+                    noonPaymentsResponse.setDetails(Helper.STATUS_FAILURE, response.message(), "", "");
+                    displayResult(false, context.getResources().getString(R.string.payment_failed), response.message());
                 }
             }
         });
@@ -315,13 +288,13 @@ public class FinishActivity extends BaseActivity {
             responseJson = response;
             JSONObject jsonObject = new JSONObject(response);
             resultCode = jsonObject.getInt("resultCode");
-            responseMessage = getJSONString(jsonObject, "message");
+            responseMessage = CommonMethods.INSTANCE.getJSONString(jsonObject, "message");
 
             if (resultCode == 0) {
                 if (jsonObject.getJSONObject("result").has("nextActions")
                         && jsonObject.getJSONObject("result").getString("nextActions").equals("CHECK_3DS_ENROLLMENT")) {
                     //get post url and open browser
-                    String url3DS = getJSONString(jsonObject.getJSONObject("result").getJSONObject("checkoutData"), "postUrl");
+                    String url3DS = CommonMethods.INSTANCE.getJSONString(jsonObject.getJSONObject("result").getJSONObject("checkoutData"), "postUrl");
                     if (url3DS.isEmpty() == false) {
                         do3DSflow(url3DS);
                     } else {
@@ -331,7 +304,7 @@ public class FinishActivity extends BaseActivity {
                     }
                 } else {
                     //NON 3DS flow
-                    responseTransactionId = getJSONString(jsonObject.getJSONObject("result").getJSONObject("transaction"), "id");
+                    responseTransactionId = CommonMethods.INSTANCE.getJSONString(jsonObject.getJSONObject("result").getJSONObject("transaction"), "id");
                     validateTransacton(response);
                 }
             } else {
@@ -344,7 +317,7 @@ public class FinishActivity extends BaseActivity {
             noonPaymentsResponse.setDetails(Helper.STATUS_FAILURE, "Exception: " + e.getMessage(), "", response);
             displayResult(false, context.getResources().getString(R.string.payment_failed),
                     "");
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 
@@ -357,43 +330,45 @@ public class FinishActivity extends BaseActivity {
             JSONObject jsonObject = new JSONObject(response);
 
             int resultCode = jsonObject.getInt("resultCode");
-            message = getJSONString(jsonObject, "message");
+            message = CommonMethods.INSTANCE.getJSONString(jsonObject, "message");
 
             if (resultCode == 0) {
                 //check amount and status
                 JSONObject jsonOrder = jsonObject.getJSONObject("result").getJSONObject("order");
-                String orderStatus = getJSONString(jsonOrder, "status");
-                String orderReference = getJSONString(jsonOrder, "reference");
-                Double amount = (data.getPaymentType().equalsIgnoreCase(PaymentType.SALE.toString())) ? getJSONDouble(jsonOrder, "totalSalesAmount") : getJSONDouble(jsonOrder, "totalAuthorizedAmount");
+                String orderStatus = CommonMethods.INSTANCE.getJSONString(jsonOrder, "status");
+                String orderReference = CommonMethods.INSTANCE.getJSONString(jsonOrder, "reference");
+                Double amount = (data.getPaymentType().equalsIgnoreCase(PaymentType.SALE.toString())) ? CommonMethods.INSTANCE.getJSONDouble(jsonOrder, "totalSalesAmount") : CommonMethods.INSTANCE.getJSONDouble(jsonOrder, "totalAuthorizedAmount");
 
                 JSONArray jsonTransactions = jsonObject.getJSONObject("result").getJSONArray("transactions");
                 String transactionStatus = "";
                 if (jsonTransactions.length() > 0) {
-                    transactionStatus = getJSONString(jsonTransactions.getJSONObject(0), "status");
+                    transactionStatus = CommonMethods.INSTANCE.getJSONString(jsonTransactions.getJSONObject(0), "status");
                 }
-                if (orderStatus.equalsIgnoreCase("CANCELLED")) {
+                if (orderStatus.equalsIgnoreCase(PaymentStatus.CANCELLED.toString())) {
                     status = Helper.STATUS_CANCELLED;
                     message = Helper.getLanguageTextByUser(this, "payment_cancelled", userUI.getLanguage(), "");
-                } else if (orderStatus.equalsIgnoreCase("FAILED") || orderStatus.toUpperCase().equals("EXPIRED") || orderStatus.toUpperCase().equals("REJECTED")) {
+                } else if (orderStatus.equalsIgnoreCase(PaymentStatus.FAILED.toString()) ||
+                        orderStatus.toUpperCase().equals(PaymentStatus.EXPIRED.toString()) ||
+                        orderStatus.toUpperCase().equals(PaymentStatus.REJECTED.toString())) {
                     status = Helper.STATUS_FAILURE;
                     message = context.getResources().getString(R.string.payment_failed);
                 } else {
-                    if (transactionStatus.equalsIgnoreCase("SUCCESS")) {
+                    if (transactionStatus.equalsIgnoreCase(PaymentStatus.SUCCESS.toString())) {
                         if ((data.getPaymentType().equalsIgnoreCase(PaymentType.SALE.toString()) && amount >= data.getAmount())
                                 || (data.getPaymentType().equalsIgnoreCase(PaymentType.AUTHORIZE.toString()) && amount >= data.getAmount())
                                 || (data.getPaymentType().equalsIgnoreCase("Authorize,Sale") && amount >= data.getAmount())) {
                             status = Helper.STATUS_SUCCESS;
                             message = context.getResources().getString(R.string.payment_success);
 
-                            responseTransactionId = getJSONString(jsonObject.getJSONObject("result").getJSONArray("transactions").getJSONObject(0), "id");
+                            responseTransactionId = CommonMethods.INSTANCE.getJSONString(jsonObject.getJSONObject("result").getJSONArray("transactions").getJSONObject(0), "id");
 
                             //set the token values
                             if (data.isAllowCardTokenization()) {
                                 if (jsonObject.getJSONObject("result").has("paymentDetails") &&
                                         jsonObject.getJSONObject("result").getJSONObject("paymentDetails").has("tokenIdentifier")) {
-                                    responseCardToken = getJSONString(jsonObject.getJSONObject("result").getJSONObject("paymentDetails"), "tokenIdentifier");
-                                    responseCardNumber = getJSONString(jsonObject.getJSONObject("result").getJSONObject("paymentDetails"), "paymentInfo");
-                                    String cn = getJSONString(jsonObject.getJSONObject("result").getJSONObject("paymentDetails"), "paymentInfo");
+                                    responseCardToken = CommonMethods.INSTANCE.getJSONString(jsonObject.getJSONObject("result").getJSONObject("paymentDetails"), "tokenIdentifier");
+                                    responseCardNumber = CommonMethods.INSTANCE.getJSONString(jsonObject.getJSONObject("result").getJSONObject("paymentDetails"), "paymentInfo");
+                                    String cn = CommonMethods.INSTANCE.getJSONString(jsonObject.getJSONObject("result").getJSONObject("paymentDetails"), "paymentInfo");
                                     responseCardType = Helper.getCardType(cn, data.getCurrency());
                                 }
                             }
@@ -430,7 +405,7 @@ public class FinishActivity extends BaseActivity {
         } catch (JSONException e) {
             noonPaymentsResponse.setDetails(Helper.STATUS_FAILURE, e.getMessage(), "", response);
             displayResult(false, context.getResources().getString(R.string.payment_failed), e.getMessage());
-            e.printStackTrace();
+//            e.printStackTrace();
         }
         return isValid;
     }
@@ -447,16 +422,16 @@ public class FinishActivity extends BaseActivity {
         mainHandler.post(() -> {
             // do your work on main thread
             if (success) {
-                viewStatus.setImageResource(R.drawable.ic_success);
-                txtMessage1.setText(message1);
-                txtMessage2.setText(message2);
+                binding.viewSuccess.setImageResource(R.drawable.ic_success);
+                binding.txtMessage1.setText(message1);
+                binding.txtMessage2.setText(message2);
             } else {
-                viewStatus.setImageResource(R.drawable.ic_failure);
-                txtMessage1.setText(message1);
-                txtMessage2.setText("");
+                binding.viewSuccess.setImageResource(R.drawable.ic_failure);
+                binding.txtMessage1.setText(message1);
+                binding.txtMessage2.setText("");
             }
-            progressBar.setVisibility(View.GONE);
-            viewStatus.setVisibility(View.VISIBLE);
+            binding.pgrBar.setVisibility(View.GONE);
+            binding.viewSuccess.setVisibility(View.VISIBLE);
 
         });
     }
@@ -511,7 +486,7 @@ public class FinishActivity extends BaseActivity {
                 "|" + data.getPaymentChannel() + "|ADD_PAYMENT_INFO|noonpayments_sdk";
         sha512 = sha512.toLowerCase();
         String hash = hashString(sha512);
-        String signature = encrypt(hash, data.getPublicKey());
+        String signature = CommonMethods.INSTANCE.encrypt(hash, data.getPublicKey());
 
         return signature;
     }
@@ -532,30 +507,6 @@ public class FinishActivity extends BaseActivity {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public String encrypt(String data, String publicKey) {
-
-        try {
-            publicKey = publicKey.replace("-----BEGIN PUBLIC KEY-----\n", "");
-            publicKey = publicKey.replace("\n-----END PUBLIC KEY-----\n", "");
-            publicKey = publicKey.replace("\n", "");
-
-            byte[] publicBytes = java.util.Base64.getDecoder().decode(publicKey.getBytes());
-            X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicBytes);
-            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            PublicKey pubKey = keyFactory.generatePublic(keySpec);
-
-            Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding");        //"RSA/ECB/PKCS1Padding"
-            cipher.init(Cipher.ENCRYPT_MODE, pubKey);
-            byte[] encryptedMessage = cipher.doFinal(data.getBytes());
-            String b64 = java.util.Base64.getEncoder().encodeToString(encryptedMessage);
-
-            return b64;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return "";
-        }
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent resultdata) {
@@ -576,28 +527,5 @@ public class FinishActivity extends BaseActivity {
                 validateTransacton("");
             }
         }
-    }
-
-    private String getJSONString(JSONObject jObject, String key) {
-        String value = "";
-        try {
-            if (jObject.has(key))
-                value = jObject.getString(key);
-        } catch (Exception ex) {
-            String qqqq = key;
-        }
-
-        return value;
-    }
-
-    private double getJSONDouble(JSONObject jObject, String key) {
-        double value = 0.0;
-        try {
-            if (jObject.has(key))
-                value = jObject.getDouble(key);
-        } catch (Exception ex) {
-        }
-
-        return value;
     }
 }

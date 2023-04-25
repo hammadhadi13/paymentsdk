@@ -16,10 +16,15 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 
 import com.google.gson.Gson;
 import com.noonpayments.paymentsdk.R;
+import com.noonpayments.paymentsdk.databinding.ActivityModeBinding;
 import com.noonpayments.paymentsdk.helpers.Helper;
 import com.noonpayments.paymentsdk.models.NoonPaymentsCard;
 import com.noonpayments.paymentsdk.models.NoonPaymentsData;
@@ -30,26 +35,20 @@ import com.noonpayments.paymentsdk.models.NoonPaymentsUI;
 import java.util.ArrayList;
 
 public class ModeActivity extends BaseActivity {
-
-    NoonPaymentsSetup setup;
-    NoonPaymentsUI userUI;
-    NoonPaymentsData data;
     ArrayList<NoonPaymentsCard> savedCards;
-    RelativeLayout dialogMode, ccBox, paymentBox;
-    TextView txtCard, txtPay, txtAmount, txtSelect, txtPaySecure;
-    ImageButton btnCancel;
-    ImageView viewArrow, viewLogo, viewmeeza;
     Context context;
+    private ActivityModeBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(getWindow().FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_mode);
+        binding = ActivityModeBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         setFinishOnTouchOutside(false);
 
         // get context to set language...
-        if(getIntent().getStringExtra("lang") != null) {
+        if (getIntent().getStringExtra("lang") != null) {
             language = getIntent().getStringExtra("lang");
         }
         context = setLocale(this, language);
@@ -75,58 +74,48 @@ public class ModeActivity extends BaseActivity {
     }
 
     private void initView() {
-        dialogMode = (RelativeLayout) findViewById(R.id.dialogMode);
-        ccBox = (RelativeLayout) findViewById(R.id.ccBox);
-        paymentBox = (RelativeLayout) findViewById(R.id.paymentBox);
-        btnCancel = (ImageButton) findViewById(R.id.btnCancel);
-        txtAmount = (TextView) findViewById(R.id.txtAmount);
-        txtCard = (TextView) findViewById(R.id.txtCard);
-        txtPay = (TextView) findViewById(R.id.txtPay);
-        txtSelect = (TextView) findViewById(R.id.txtSelect);
-        txtPaySecure = (TextView) findViewById(R.id.txtPaySecure);
-        viewArrow = (ImageView) findViewById(R.id.viewArrow);
-        viewLogo = (ImageView) findViewById(R.id.viewLogo);
-        viewmeeza = findViewById(R.id.viewmeeza);
 
         //set text
-        txtSelect.setText(context.getResources().getString(R.string.payment_method));
-        txtCard.setText(context.getResources().getString(R.string.card));
-        txtPay.setText(context.getResources().getString(R.string.pay_now));
-        txtPaySecure.setText(context.getResources().getString(R.string.your_payments_are_processed_securely));
-        txtAmount.setText(data.getDisplayAmount(userUI.getLanguage()));
+        binding.txtSelect.setText(context.getResources().getString(R.string.payment_method));
+        binding.txtCard.setText(context.getResources().getString(R.string.card));
+        binding.txtPay.setText(context.getResources().getString(R.string.pay_now));
+        binding.txtPaySecure.setText(context.getResources().getString(R.string.your_payments_are_processed_securely));
+        binding.txtAmount.setText(data.getDisplayAmount(userUI.getLanguage()));
 
         String s = data.getDisplayAmount(userUI.getLanguage());
 
         if (data.getCurrency().equalsIgnoreCase("SAR")) {
-            viewmeeza.setVisibility(View.VISIBLE);
-            viewmeeza.setImageResource(R.drawable.ic_mada);
+            binding.viewmeeza.setVisibility(View.VISIBLE);
+            binding.viewmeeza.setImageResource(R.drawable.ic_mada);
         } else if (data.getCurrency().equalsIgnoreCase("EGP")) {
-            viewmeeza.setVisibility(View.VISIBLE);
-            viewmeeza.setImageResource(R.drawable.meeza);
+            binding.viewmeeza.setVisibility(View.VISIBLE);
+            binding.viewmeeza.setImageResource(R.drawable.meeza);
         }
 
         //colors & icons
-        userUI.setupDialog(this, dialogMode);
+        userUI.setupDialog(this, binding.dialogMode);
         setupCardSection();
         setupPayableSection();
         setTextColor();
-        userUI.setupLogo(viewLogo);
+        userUI.setupLogo(binding.viewLogo);
 
     }
 
     private void initEvents() {
-        ccBox.setOnClickListener(view -> gotoCard());
+        binding.ccBox.setOnClickListener(view -> gotoCard());
 
-        btnCancel.setOnClickListener(view -> doCancel());
+        binding.btnCancel.setOnClickListener(view -> doCancel());
     }
 
     private void gotoCard() {
         if (savedCards.size() > 0) {
             Intent in = new Intent(this, CardActivity.class);
-            startActivityForResult(in, 2001);
+//            startActivityForResult(in, 2001);
+            launchCardActivity.launch(in);
         } else {
             Intent in = new Intent(this, NewCardActivity.class);
-            startActivityForResult(in, 2002);
+//            startActivityForResult(in, 2002);
+            launchCardActivity.launch(in);
         }
     }
 
@@ -142,7 +131,7 @@ public class ModeActivity extends BaseActivity {
             NoonPaymentsResponse response = new NoonPaymentsResponse();
             response.setDetails(Helper.STATUS_FAILURE, "Payment cancelled by user", "", "");
             Intent resultIntent = new Intent();
-            resultIntent.putExtra("noonresponse",  new Gson().toJson(response));
+            resultIntent.putExtra("noonresponse", new Gson().toJson(response));
             setResult(Activity.RESULT_OK, resultIntent);
             finish();
         });
@@ -166,10 +155,31 @@ public class ModeActivity extends BaseActivity {
 
     private void doComplete(String response) {
         Intent resultIntent = new Intent();
-        resultIntent.putExtra("noonresponse",  new Gson().toJson(response));
+        resultIntent.putExtra("noonresponse", new Gson().toJson(response));
         setResult(Activity.RESULT_OK, resultIntent);
         finish();
     }
+
+    ActivityResultLauncher<Intent> launchCardActivity = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data.hasExtra("response")) {
+                            String response = data.getStringExtra("response");
+                            if (response.equals("cancel")) {
+                                doCancelNoAlert();
+                            } else if (response.equals("complete")) {
+                                String r = data.getStringExtra("noonresponse");
+                                doComplete(r);
+                            }
+                        }
+                    }
+                }
+            });
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -202,26 +212,25 @@ public class ModeActivity extends BaseActivity {
         int rad = Helper.GetPixelsFromDP(this, 8);
         gd.setCornerRadius(rad);
         gd.setStroke(2, borderColor);
-        ccBox.setBackground(gd);
+        binding.ccBox.setBackground(gd);
         int paddingLR = Helper.GetPixelsFromDP(this, 20);
         int paddingTB = Helper.GetPixelsFromDP(this, 14);
-        ccBox.setPadding(paddingTB, paddingLR, paddingTB, paddingTB);
+        binding.ccBox.setPadding(paddingTB, paddingLR, paddingTB, paddingTB);
     }
 
     private void setupPayableSection() {
         int bgColour = userUI.getPaynowBackgroundColorPrimary();
-        paymentBox.setBackgroundColor(bgColour);
+        binding.paymentBox.setBackgroundColor(bgColour);
     }
 
     private void setTextColor() {
         //text colours
-        txtSelect.setTextColor(userUI.getPaymentOptionHeadingForeground());
-        txtPaySecure.setTextColor(userUI.getFooterForegroundColor());
+        binding.txtSelect.setTextColor(userUI.getPaymentOptionHeadingForeground());
+        binding.txtPaySecure.setTextColor(userUI.getFooterForegroundColor());
 
-        txtCard.setTextColor(userUI.getPaymentOptionForeground());
+        binding.txtCard.setTextColor(userUI.getPaymentOptionForeground());
 
-        txtPay.setTextColor(userUI.getPaynowForegroundColorPrimary());
-        txtAmount.setTextColor(userUI.getPaynowForegroundColorPrimary());
+        binding.txtPay.setTextColor(userUI.getPaynowForegroundColorPrimary());
+        binding.txtAmount.setTextColor(userUI.getPaynowForegroundColorPrimary());
     }
-
 }

@@ -1,5 +1,6 @@
 package com.noonpayments.paymentsdk.activities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -12,21 +13,24 @@ import android.webkit.WebViewClient;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.noonpayments.paymentsdk.R;
+import com.noonpayments.paymentsdk.databinding.ActivityDsBinding;
 
 import java.util.Set;
 
 
 public class DSActivity extends AppCompatActivity {
 
-    private WebView webView;
+    //    private WebView webView;
     String url3DS;
     String responseOrderId = "";
     String responseMerchantId = "";
+    private ActivityDsBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ds);
+        binding = ActivityDsBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         Bundle extras = getIntent().getExtras();
         url3DS = extras.getString("url3ds");
@@ -34,14 +38,13 @@ public class DSActivity extends AppCompatActivity {
         initView();
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private void initView() {
-        webView = (WebView) findViewById(R.id.webview);
-        webView.setWebViewClient(new MyWebViewClient());
-
-        webView.getSettings().setLoadsImagesAutomatically(true);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
-        webView.loadUrl(url3DS);
+        binding.webview.setWebViewClient(new MyWebViewClient());
+        binding.webview.getSettings().setLoadsImagesAutomatically(true);
+        binding.webview.getSettings().setJavaScriptEnabled(true);
+        binding.webview.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+        binding.webview.loadUrl(url3DS);
     }
 
 

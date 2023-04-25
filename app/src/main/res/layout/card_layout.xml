@@ -1,69 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <RelativeLayout
+    <data>
+
+    </data>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/llList"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginBottom="2dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <RadioButton
-            android:id="@+id/rdoCard"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_centerVertical="true"
-            android:gravity="center_vertical" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/llList"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="2dp">
 
-        <ImageView
-            android:id="@+id/viewCard"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="15dp"
-            android:layout_toEndOf="@+id/rdoCard"
-            android:background="@android:color/transparent"
-            android:gravity="center_vertical"
-            android:src="@drawable/ic_visa" />
+            <RadioButton
+                android:id="@+id/rdoCard"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical" />
 
-        <TextView
-            android:id="@+id/txtCardNumber"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="15dp"
-            android:layout_toEndOf="@+id/viewCard"
-            android:gravity="center_vertical"
-            android:text="ending in 9999"
-            style="@style/Label" />
+            <ImageView
+                android:id="@+id/viewCard"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="15dp"
+                android:layout_toEndOf="@+id/rdoCard"
+                android:background="@android:color/transparent"
+                android:gravity="center_vertical"
+                android:src="@drawable/ic_visa" />
 
-        <EditText
-            android:id="@+id/edtRGCVV"
-            style="@style/EditTextCVV"
-            android:layout_width="50dp"
-            android:layout_height="30dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="18dp"
-            android:contentDescription="CVV"
-            android:hint="CVV"
-            android:inputType="numberPassword"
-            android:maxLength="4"
-            android:enabled="false"
-            android:selectAllOnFocus="true" />
+            <TextView
+                android:id="@+id/txtCardNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="15dp"
+                android:layout_toEndOf="@+id/viewCard"
+                android:gravity="center_vertical"
+                android:text="ending in 9999"
+                style="@style/Label" />
 
-    </RelativeLayout>
+            <EditText
+                android:id="@+id/edtRGCVV"
+                style="@style/EditTextCVV"
+                android:layout_width="50dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="18dp"
+                android:contentDescription="CVV"
+                android:hint="CVV"
+                android:inputType="numberPassword"
+                android:maxLength="4"
+                android:enabled="false"
+                android:selectAllOnFocus="true" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@android:color/darker_gray" />
+        </RelativeLayout>
 
-</LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@android:color/darker_gray" />
+
+    </LinearLayout>
+</layout>

@@ -1,136 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/dialogMode"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/dialog_shape"
-    android:orientation="vertical"
-    android:paddingBottom="0dp">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <LinearLayout
-        android:id="@+id/llLogo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="22dp"
-        android:gravity="center"
-        android:orientation="vertical">
+    <data>
 
-        <ImageView
-            android:id="@+id/viewLogo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:src="@drawable/ic_noonpayment_logo" />
-    </LinearLayout>
+    </data>
 
     <RelativeLayout
-        android:id="@+id/messageBox"
+        android:id="@+id/dialogMode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/llLogo"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="15dp"
-        android:gravity="center">
+        android:background="@drawable/dialog_shape"
+        android:orientation="vertical"
+        android:paddingBottom="0dp">
 
         <LinearLayout
-            android:id="@+id/llStatus"
+            android:id="@+id/llLogo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="60dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="22dp"
+            android:gravity="center"
             android:orientation="vertical">
 
-        <ProgressBar
-            android:id="@+id/pgrBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_gravity="center"
-            android:maxHeight="60dp"
-            android:maxWidth="60dp"
-            android:indeterminate="true"
-            />
+            <ImageView
+                android:id="@+id/viewLogo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_noonpayment_logo" />
+        </LinearLayout>
 
-        <ImageView
-            android:id="@+id/viewSuccess"
+        <RelativeLayout
+            android:id="@+id/messageBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:gravity="center"
-            android:adjustViewBounds="true"
-            android:maxWidth="60dp"
-            android:layout_gravity="center"
-            android:maxHeight="60dp"
-            android:scaleType="fitCenter"
-            android:visibility="gone"
-            android:src="@drawable/ic_success" />
+            android:layout_below="@+id/llLogo"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="15dp"
+            android:gravity="center">
+
+            <LinearLayout
+                android:id="@+id/llStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="60dp"
+                android:orientation="vertical">
+
+                <ProgressBar
+                    android:id="@+id/pgrBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:maxHeight="60dp"
+                    android:maxWidth="60dp"
+                    android:indeterminate="true" />
+
+                <ImageView
+                    android:id="@+id/viewSuccess"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:adjustViewBounds="true"
+                    android:maxWidth="60dp"
+                    android:layout_gravity="center"
+                    android:maxHeight="60dp"
+                    android:scaleType="fitCenter"
+                    android:visibility="gone"
+                    android:src="@drawable/ic_success" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/txtMessage1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/llStatus"
+                android:layout_marginTop="25dp"
+                android:gravity="center"
+                android:text=""
+                style="@style/LabelSuccess" />
+
+            <TextView
+                android:id="@+id/txtMessage2"
+                style="@style/LabelSuccess"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtMessage1"
+                android:layout_marginTop="2dp"
+                android:gravity="center"
+                android:text="@string/payment_success" />
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/secureBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/messageBox"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="45dp"
+            android:layout_marginEnd="20dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp">
+
+            <TextView
+                android:id="@+id/txtPaySecure"
+                style="@style/LabelSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/your_payments_are_processed_securely"
+                android:textAlignment="center" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/llTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/btnCancel"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_x_close" />
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/txtMessage1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/llStatus"
-            android:layout_marginTop="25dp"
-            android:gravity="center"
-            android:text=""
-            style="@style/LabelSuccess" />
-
-        <TextView
-            android:id="@+id/txtMessage2"
-            style="@style/LabelSuccess"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/txtMessage1"
-            android:layout_marginTop="2dp"
-            android:gravity="center"
-            android:text="@string/payment_success" />
-
     </RelativeLayout>
-
-
-    <RelativeLayout
-        android:id="@+id/secureBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/messageBox"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="45dp"
-        android:layout_marginEnd="20dp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp">
-
-        <TextView
-            android:id="@+id/txtPaySecure"
-            style="@style/LabelSmall"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/your_payments_are_processed_securely"
-            android:textAlignment="center" />
-
-    </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/llTop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:orientation="vertical">
-
-        <ImageButton
-            android:id="@+id/btnCancel"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="5dp"
-            android:background="@android:color/transparent"
-            android:src="@drawable/ic_x_close" />
-
-    </LinearLayout>
-
-</RelativeLayout>
+</layout>

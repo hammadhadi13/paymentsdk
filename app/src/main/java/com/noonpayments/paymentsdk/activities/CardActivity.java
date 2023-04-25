@@ -28,6 +28,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 
 import com.noonpayments.paymentsdk.R;
+import com.noonpayments.paymentsdk.databinding.ActivityCardBinding;
 import com.noonpayments.paymentsdk.helpers.Helper;
 import com.noonpayments.paymentsdk.models.Language;
 import com.noonpayments.paymentsdk.models.NoonPaymentsCard;
@@ -39,16 +40,13 @@ import java.util.ArrayList;
 
 public class CardActivity extends BaseActivity {
 
-    NoonPaymentsSetup setup;
-    NoonPaymentsUI userUI;
-    NoonPaymentsData data;
     ArrayList<NoonPaymentsCard> savedCards;
-    RelativeLayout dialogMode, listBox, paymentBox, paynowBox;
-    TextView txtBack, txtPay, txtAmount, txtPayNow, txtSelectCard;
-    ImageView viewArrowBack, viewLogo;
-    LinearLayout llListContent;
-    Button btnNewCard;
-    ImageButton btnCancel;
+//    RelativeLayout dialogMode, listBox, paymentBox, paynowBox;
+//    TextView txtBack, txtPay, txtAmount, txtPayNow, txtSelectCard;
+//    ImageView viewArrowBack, viewLogo;
+//    LinearLayout llListContent;
+//    Button btnNewCard;
+//    ImageButton btnCancel;
 
     int selectedCard = -1;
     RadioButton rbSelected = null;
@@ -57,12 +55,15 @@ public class CardActivity extends BaseActivity {
 
     Context context;
 
+    private ActivityCardBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(getWindow().FEATURE_NO_TITLE);
 
-        setContentView(R.layout.activity_card);
+        binding = ActivityCardBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         setFinishOnTouchOutside(false);
 
 
@@ -77,53 +78,28 @@ public class CardActivity extends BaseActivity {
         window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         //setup the UI
-        setup = NoonPaymentsSetup.getInstance();
-        userUI = setup.getNoonUI();
-        data = setup.getNoonData();
         savedCards = setup.getNoonSavedCards();
-
         initView();
-
         initEvents();
-
         initCardList();
     }
 
     private void initView() {
+        binding.txtAmount.setText(data.getDisplayAmount(userUI.getLanguage()));
 
-        dialogMode = (RelativeLayout) findViewById(R.id.dialogMode);
-        //newCardBox = (RelativeLayout) findViewById(R.id.newCardBox);
-        listBox = (RelativeLayout) findViewById(R.id.listBox);
-        paymentBox = (RelativeLayout) findViewById(R.id.paymentBox);
-        paynowBox = (RelativeLayout) findViewById(R.id.paynowBox);
-        viewLogo = (ImageView) findViewById(R.id.viewLogo);
-
-        btnNewCard = (Button) findViewById(R.id.btnNewCard);
-        btnCancel = (ImageButton) findViewById(R.id.btnCancel);
-
-        txtBack = (TextView) findViewById(R.id.txtBack);
-        txtPay = (TextView) findViewById(R.id.txtPay);
-        txtAmount = (TextView) findViewById(R.id.txtAmount);
-        txtPayNow = (TextView) findViewById(R.id.txtPayNow);
-        txtSelectCard = (TextView) findViewById(R.id.txtSelectCard);
-
-        viewArrowBack = (ImageView) findViewById(R.id.viewArrowBack);
-
-        txtAmount.setText(data.getDisplayAmount(userUI.getLanguage()));
-
-        paynowBox.setEnabled(false);
+        binding.paynowBox.setEnabled(false);
 
         //set text
-        txtBack.setText(context.getResources().getString(R.string.back_payment));
-        txtSelectCard.setText(context.getResources().getString(R.string.save_card));
-        txtPayNow.setText(context.getResources().getString(R.string.pay_now));
-        txtPay.setText(context.getResources().getString(R.string.payable_amount));
-        btnNewCard.setText(context.getResources().getString(R.string.add_card));
+        binding.txtBack.setText(context.getResources().getString(R.string.back_payment));
+        binding.txtSelectCard.setText(context.getResources().getString(R.string.save_card));
+        binding.txtPayNow.setText(context.getResources().getString(R.string.pay_now));
+        binding.txtPay.setText(context.getResources().getString(R.string.payable_amount));
+        binding.btnNewCard.setText(context.getResources().getString(R.string.add_card));
 
         //colors & icons
-        userUI.setupDialog(this, dialogMode);
-        userUI.setupPaynow(this, paymentBox, paynowBox, txtPay, txtAmount, txtPayNow);
-        userUI.setupLogo(viewLogo);
+        userUI.setupDialog(this, binding.dialogMode);
+        userUI.setupPaynow(this, binding.paymentBox, binding.paynowBox, binding.txtPay, binding.txtAmount, binding.txtPayNow);
+        userUI.setupLogo(binding.viewLogo);
 
         //setup add new button border and colors
         GradientDrawable gd = new GradientDrawable();
@@ -131,31 +107,29 @@ public class CardActivity extends BaseActivity {
         int rad = Helper.GetPixelsFromDP(this, 8);
         gd.setCornerRadii(new float[]{rad, rad, rad, rad, rad, rad, rad, rad});
         gd.setStroke(2, userUI.getBoxBorderColor());
-        btnNewCard.setBackground(gd);
-        btnNewCard.setTextColor(userUI.getAddNewCardTextForegroundColor());
+        binding.btnNewCard.setBackground(gd);
+        binding.btnNewCard.setTextColor(userUI.getAddNewCardTextForegroundColor());
 
         //heading and other text colors
-        txtBack.setTextColor(userUI.getPaymentOptionHeadingForeground());
-        txtSelectCard.setTextColor(userUI.getBoxForegroundColor());
+        binding.txtBack.setTextColor(userUI.getPaymentOptionHeadingForeground());
+        binding.txtSelectCard.setTextColor(userUI.getBoxForegroundColor());
     }
 
     private void initEvents() {
 
-        paynowBox.setOnClickListener(view -> doPayment());
+        binding.paynowBox.setOnClickListener(view -> doPayment());
 
-        btnNewCard.setOnClickListener(view -> doNewCard());
+        binding.btnNewCard.setOnClickListener(view -> doNewCard());
 
-        btnCancel.setOnClickListener(view -> doCancel());
+        binding.btnCancel.setOnClickListener(view -> doCancel());
 
-        viewArrowBack.setOnClickListener(view -> doBack());
+        binding.viewArrowBack.setOnClickListener(view -> doBack());
 
-        txtBack.setOnClickListener(view -> doBack());
+        binding.txtBack.setOnClickListener(view -> doBack());
     }
 
     private void initCardList() {
-        llListContent = (LinearLayout) findViewById(R.id.llListContent);
-
-        userUI.setupBox(this, listBox, 1);
+        userUI.setupBox(this, binding.listBox, 1);
 
         int index = 0;
         LayoutInflater vi = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -232,7 +206,7 @@ public class CardActivity extends BaseActivity {
             rbCardList.add(rb);
 
             // insert into main view
-            llListContent.addView(v, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            binding.llListContent.addView(v, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             index++;
         }
 
@@ -262,13 +236,13 @@ public class CardActivity extends BaseActivity {
 
         String msg = validateEntry();
         if (msg.isEmpty()) {
-            paynowBox.setBackgroundColor(userUI.getPaynowBackgroundColorHighlight());
-            paynowBox.setEnabled(true);
-            txtPayNow.setTextColor(Color.WHITE);
+            binding.paynowBox.setBackgroundColor(userUI.getPaynowBackgroundColorHighlight());
+            binding.paynowBox.setEnabled(true);
+            binding.txtPayNow.setTextColor(Color.WHITE);
         } else {
-            paynowBox.setBackgroundColor(userUI.getPaynowBackgroundColor());
-            paynowBox.setEnabled(false);
-            txtPayNow.setTextColor(userUI.getPaynowForegroundColor());
+            binding.paynowBox.setBackgroundColor(userUI.getPaynowBackgroundColor());
+            binding.paynowBox.setEnabled(false);
+            binding.txtPayNow.setTextColor(userUI.getPaynowForegroundColor());
         }
     }
 
@@ -338,9 +312,8 @@ public class CardActivity extends BaseActivity {
             if (response.equals("close")) {
                 doCancel();
             } else {
-                dialogMode.setVisibility(View.VISIBLE);
+                binding.dialogMode.setVisibility(View.VISIBLE);
             }
         }
     }
-
 }
