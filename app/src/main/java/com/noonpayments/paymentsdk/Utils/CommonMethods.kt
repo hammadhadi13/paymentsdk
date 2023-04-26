@@ -51,7 +51,7 @@ object CommonMethods {
         return value
     }
 
-     fun getJSONString(jObject: JSONObject, key: String): String? {
+    fun getJSONString(jObject: JSONObject, key: String): String? {
         var value: String? = ""
         try {
             if (jObject.has(key)) value = jObject.getString(key)
@@ -59,5 +59,18 @@ object CommonMethods {
             val qqqq = key
         }
         return value
+    }
+
+    fun cancelledOrderJSON(orderNumber: String): String {
+        return try {
+            val initObject = JSONObject()
+            initObject.put("apiOperation", "CANCEL")
+            val orderObject = JSONObject()
+            orderObject.put("id", orderNumber)
+            initObject.put("order", orderObject)
+            initObject.toString()
+        } catch (ex: java.lang.Exception) {
+            ""
+        }
     }
 }

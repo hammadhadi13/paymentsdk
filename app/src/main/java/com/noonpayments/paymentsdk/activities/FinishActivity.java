@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -13,28 +12,20 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.RequiresApi;
 
 import com.google.gson.Gson;
 import com.noonpayments.paymentsdk.R;
 import com.noonpayments.paymentsdk.Utils.CommonMethods;
+import com.noonpayments.paymentsdk.Utils.URLs;
 import com.noonpayments.paymentsdk.databinding.ActivityFinishBinding;
 import com.noonpayments.paymentsdk.helpers.Helper;
 import com.noonpayments.paymentsdk.models.NoonPaymentsAPIConfig;
-import com.noonpayments.paymentsdk.models.NoonPaymentsData;
 import com.noonpayments.paymentsdk.models.NoonPaymentsResponse;
-import com.noonpayments.paymentsdk.models.NoonPaymentsSetup;
-import com.noonpayments.paymentsdk.models.NoonPaymentsUI;
 import com.noonpayments.paymentsdk.models.PaymentMode;
 import com.noonpayments.paymentsdk.models.PaymentStatus;
 import com.noonpayments.paymentsdk.models.PaymentType;
@@ -45,13 +36,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.KeyFactory;
 import java.security.MessageDigest;
-import java.security.PublicKey;
-import java.security.spec.X509EncodedKeySpec;
-
-import javax.crypto.Cipher;
-
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -82,8 +67,6 @@ public class FinishActivity extends BaseActivity {
     String responseTransactionId = "";
 
     private MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-    final OkHttpClient client = new OkHttpClient();
-    NoonPaymentsAPIConfig noonPaymentsAPIConfig = new NoonPaymentsAPIConfig();
     Handler mainHandler;
     Context context;
     ActivityResultLauncher<Intent> finishActivityLauncher;
@@ -200,7 +183,6 @@ public class FinishActivity extends BaseActivity {
 
     private void processPayment() {
         try {
-
             //set all values to default
             noonPaymentsResponse = new NoonPaymentsResponse();
             responseJson = "";
@@ -229,7 +211,7 @@ public class FinishActivity extends BaseActivity {
                 .post(body)
                 .build();
 
-        client.newCall(request).enqueue(new Callback() {
+        URLs.INSTANCE.getBaseClient().newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 // Something went wrong
@@ -258,7 +240,7 @@ public class FinishActivity extends BaseActivity {
                 .addHeader("Authorization", header)
                 .build();
 
-        client.newCall(request).enqueue(new Callback() {
+        URLs.INSTANCE.getBaseClient().newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 // Something went wrong

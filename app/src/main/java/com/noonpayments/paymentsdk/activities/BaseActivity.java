@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.noonpayments.paymentsdk.Utils.CommonMethods;
+import com.noonpayments.paymentsdk.Utils.URLs;
 import com.noonpayments.paymentsdk.helpers.Helper;
 import com.noonpayments.paymentsdk.models.NoonPaymentsData;
 import com.noonpayments.paymentsdk.models.NoonPaymentsResponse;
@@ -30,7 +32,6 @@ import java.util.Objects;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -38,14 +39,15 @@ import okhttp3.Response;
 public class BaseActivity extends AppCompatActivity {
 
     static String language = "en";
-    public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-    final OkHttpClient client = new OkHttpClient();
+    final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+
     Handler mainHandler;
-    Helper helper ;
+    Helper helper;
     NoonPaymentsSetup setup;
     NoonPaymentsUI userUI;
     NoonPaymentsData data;
     NoonPaymentsResponse noonPaymentsResponse;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +62,6 @@ public class BaseActivity extends AppCompatActivity {
         noonPaymentsResponse = new NoonPaymentsResponse();
 
     }
-
 
     public Context setLocale(Context activity, String languageCode) {
         Locale locale = new Locale(languageCode);
@@ -78,10 +79,10 @@ public class BaseActivity extends AppCompatActivity {
         try {
             PaymentMode paymentMode = PaymentMode.TEST;
             String url = NOON_URL_LIVE_ORDER;
-            if (paymentMode == PaymentMode.TEST)
+            if (data.getPaymentMode() == PaymentMode.TEST)
                 url = NOON_URL_TEST_ORDER;
 
-            String json = createInitiateJSON(orderNumber);
+            String json = CommonMethods.INSTANCE.cancelledOrderJSON(orderNumber);
             this.post(url, json);
         } catch (Exception ex) {
             String s = ex.getMessage();
@@ -98,7 +99,7 @@ public class BaseActivity extends AppCompatActivity {
                 .post(body)
                 .build();
 
-        client.newCall(request).enqueue(new Callback() {
+        URLs.INSTANCE.getBaseClient().newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 // Something went wrong
@@ -119,10 +120,10 @@ public class BaseActivity extends AppCompatActivity {
                         JSONObject jsonObject = new JSONObject(responseStr);
                         if (jsonObject.has("resultCode"))
                             resultCode = jsonObject.getString("resultCode");
-                        if (jsonObject.has("message"))
-                            message = jsonObject.getString("message");
-                        else
-                            message = "Payment initiation failed";
+//                        if (jsonObject.has("message"))
+                        message = jsonObject.getString("message");
+//                        else
+//                            message = "Payment initiation failed";
                         if (resultCode.equals("0")) {
                             mainHandler.post(() -> {
                                 Toast.makeText(BaseActivity.this, "Payment Cancelled!", Toast.LENGTH_LONG).show();
@@ -148,40 +149,5 @@ public class BaseActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    public String createInitiateJSON(String orderNumber) {
-        try {
-            JSONObject initObject = new JSONObject();
-            initObject.put("apiOperation", "CANCEL");
-
-            JSONObject orderObject = new JSONObject();
-            orderObject.put("id", orderNumber);
-//            orderObject.put("amount", amount);
-//            orderObject.put("currency", currency);
-//            orderObject.put("name", "PRODUCTS");
-//            orderObject.put("channel", paymentChannel);
-//            orderObject.put("category", paymentCategory);
-
-//            JSONObject configObject = new JSONObject();
-//            configObject.put("returnUrl", returnURL);
-//            if (language == Language.ARABIC)
-//                configObject.put("locale", "ar");
-//            else
-//                configObject.put("locale", "en");
-//            if (paymentType == PaymentType.AUTHORIZE)
-//                configObject.put("paymentAction", "authorize");
-//            else
-//                configObject.put("paymentAction", "sale");
-//            if (cardTokenization)
-//                configObject.put("tokenizeCC", cardTokenization);
-
-            initObject.put("order", orderObject);
-//            initObject.put("configuration", configObject);
-
-            return initObject.toString();
-        } catch (Exception ex) {
-            return "";
-        }
     }
 }

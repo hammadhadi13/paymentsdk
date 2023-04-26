@@ -62,7 +62,7 @@ public class NoonPaymentsSetup {
         return omannetCardList;
     }
 
-    public ArrayList<String> getMaestroCardList(){
+    public ArrayList<String> getMaestroCardList() {
         return maestroCardList;
     }
 
@@ -81,7 +81,7 @@ public class NoonPaymentsSetup {
                 "524514", "529741", "537767", "535989", "536023", "513213", "520058", "558563", "585265", "588983",
                 "588982", "589005", "508160", "531095", "530906", "532013", "605141", "968204", "422817", "422818",
                 "422819", "428331", "483010", "483011", "483012", "589206", "968207", "419593", "439954", "530060",
-                "531196", "420132"
+                "531196", "420132", "99999", "89999"
         };
 
         madaCardList.addAll(Arrays.asList(cards));
