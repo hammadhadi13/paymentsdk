@@ -4,7 +4,7 @@ import okhttp3.OkHttpClient
 
 object URLs {
 
-    const val authHeader = "Key_Test UGx1Z2luLlBsdWdpbl90ZXN0OmRmMDU1YTFiMjU4YzQ1MzRiZWZmNjlkMmFmN2JlOTk2"
+//     var authHeader = "Key_Test UGx1Z2luLlBsdWdpbl90ZXN0OmRmMDU1YTFiMjU4YzQ1MzRiZWZmNjlkMmFmN2JlOTk2"
 
 
      const val NOON_URL_TEST = "https://api-test.noonpayments.com/payment/v1/"

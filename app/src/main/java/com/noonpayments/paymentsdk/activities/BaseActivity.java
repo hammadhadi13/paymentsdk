@@ -1,6 +1,5 @@
 package com.noonpayments.paymentsdk.activities;
 
-import static com.noonpayments.paymentsdk.Utils.URLs.authHeader;
 import static com.noonpayments.paymentsdk.models.NoonPaymentsAPIConfig.NOON_URL_LIVE_ORDER;
 import static com.noonpayments.paymentsdk.models.NoonPaymentsAPIConfig.NOON_URL_TEST_ORDER;
 
@@ -95,7 +94,7 @@ public class BaseActivity extends AppCompatActivity {
         RequestBody body = RequestBody.create(json, JSON);
         Request request = new Request.Builder()
                 .url(url)
-                .addHeader("Authorization", authHeader)
+                .addHeader("Authorization", data.getAuthorizationHeader())
                 .post(body)
                 .build();
 
