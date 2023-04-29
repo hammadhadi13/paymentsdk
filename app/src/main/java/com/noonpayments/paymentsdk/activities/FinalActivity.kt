@@ -243,8 +243,7 @@ class FinalActivity : BaseActivity() {
             val success = false
             var resultCode = -1
             responseJson = response
-            val jsonObject =
-                JSONObject(response.substring(response.indexOf("{"), response.lastIndexOf("}")))
+            val jsonObject = JSONObject(response)
             resultCode = jsonObject.getInt("resultCode")
             responseMessage = getJSONString(jsonObject, "message")!!
             if (resultCode == 0) {
@@ -294,10 +293,7 @@ class FinalActivity : BaseActivity() {
                 )
             }
         } catch (e: JSONException) {
-            Log.d(
-                "watchingError",
-                "processResponse: this is due to exception ${e.message.toString()}"
-            )
+            Log.d("watchingError", "processResponse: this is due to exception ${e.message.toString()}")
 
             noonPaymentsResponse.setDetails(
                 Helper.STATUS_FAILURE,
@@ -318,7 +314,7 @@ class FinalActivity : BaseActivity() {
         try {
             var status = Helper.STATUS_FAILURE
             var message: String? = ""
-            val jsonObject = JSONObject(response.substring(response.indexOf("{"), response.lastIndexOf("}")))
+            val jsonObject = JSONObject(response)
             val resultCode = jsonObject.getInt("resultCode")
             message = getJSONString(jsonObject, "message")
             if (resultCode == 0) {

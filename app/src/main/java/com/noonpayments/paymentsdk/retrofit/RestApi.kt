@@ -2,6 +2,7 @@ package com.retech.yapiee.domain.retrofit
 
 import com.google.gson.JsonObject
 import com.noonpayments.paymentsdk.Utils.URLs
+import com.noonpayments.paymentsdk.models.PaymentResponseModel
 import com.noonpayments.paymentsdk.models.ResponseModel
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -17,7 +18,7 @@ interface RestApi {
     @POST(URLs.order)
     suspend fun callPayment(
         @Body data: RequestBody
-    ): ResponseModel
+    ): PaymentResponseModel
 
     @GET("order/{post_id}")
     suspend fun callFinalApi(
