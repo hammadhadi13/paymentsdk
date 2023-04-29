@@ -319,13 +319,13 @@ class FinalActivity : BaseActivity() {
         }
     }
 
-    private fun validateOrder(response: PaymentResponseModel): Boolean {
+    private fun validateOrder(response: FinalPaymentResponseModel): Boolean {
         val isValid = false
         try {
             var status = Helper.STATUS_FAILURE
             var message: String? = ""
 //            val jsonObject = JSONObject(response)
-            val resultCode = response.resultCode
+            val resultCode = response.resultCode!!
 
 //            message = getJSONString(jsonObject, "message")
             message = response.message.toString()
@@ -342,11 +342,11 @@ class FinalActivity : BaseActivity() {
                     )
                 ) jsonOrder.totalSalesAmount else jsonOrder.totalAuthorizedAmount
 
-                val jsonTransactions = response.result?.transaction
+                val jsonTransactions = response.result?.transactions
 //                    jsonObject.getJSONObject("result").getJSONArray("transactions")
                 var transactionStatus: String? = ""
                 if (jsonTransactions != null) {
-                    transactionStatus = jsonTransactions.status
+                    transactionStatus = jsonTransactions[0].status
 //                        getJSONString(jsonTransactions.getJSONObject(0), "status")
                 }
                 if (orderStatus.equals(PaymentStatus.CANCELLED.toString(), ignoreCase = true)) {
@@ -383,7 +383,7 @@ class FinalActivity : BaseActivity() {
                         ) {
                             status = Helper.STATUS_SUCCESS
                             message = context!!.resources.getString(R.string.payment_success)
-                            responseTransactionId = jsonTransactions?.id.toString()
+                            responseTransactionId = jsonTransactions!![0].id.toString()
 //                                getJSONString(
 //                                    jsonObject.getJSONObject("result").getJSONArray("transactions")
 //                                        .getJSONObject(0), "id"

@@ -3,6 +3,7 @@ package com.noonpayments.paymentsdk.ViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.arhamsoft.ilets.domain.repositories.GetApiResponseRepo
+import com.noonpayments.paymentsdk.models.FinalPaymentResponseModel
 import com.noonpayments.paymentsdk.models.PaymentResponseModel
 import com.noonpayments.paymentsdk.models.ResponseModel
 import okhttp3.RequestBody
@@ -11,7 +12,7 @@ class ApiCallingViewModel(private val getApiResponseRepo: GetApiResponseRepo) : 
 
     private var cancelResponse: MutableLiveData<ResponseModel> = MutableLiveData()
     private var paymentResponse: MutableLiveData<PaymentResponseModel> = MutableLiveData()
-    private var finalPaymentResponse: MutableLiveData<PaymentResponseModel> = MutableLiveData()
+    private var finalPaymentResponse: MutableLiveData<FinalPaymentResponseModel> = MutableLiveData()
     private var errorResponse: MutableLiveData<String> = MutableLiveData()
 
     fun getCancelResponse(): MutableLiveData<ResponseModel> {
@@ -26,7 +27,7 @@ class ApiCallingViewModel(private val getApiResponseRepo: GetApiResponseRepo) : 
         return errorResponse
     }
 
-    fun getFinalPaymentResponse():MutableLiveData<PaymentResponseModel>{
+    fun getFinalPaymentResponse():MutableLiveData<FinalPaymentResponseModel>{
         return  finalPaymentResponse
     }
 
