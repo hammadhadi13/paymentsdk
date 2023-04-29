@@ -20,9 +20,9 @@ interface RestApi {
         @Body data: RequestBody
     ): PaymentResponseModel
 
-    @GET("order/{post_id}")
+    @GET("order/{order_Id}")
     suspend fun callFinalApi(
-        @Path("orderId") postId: String
+        @Path("order_Id") orderId: String
     ): ResponseModel
 
 
