@@ -37,7 +37,7 @@ class ApiCallingViewModel(private val getApiResponseRepo: GetApiResponseRepo) : 
         }
     }
 
-    suspend fun callPaymentApi(obj:String){
+    suspend fun callPaymentApi(obj:RequestBody){
         try {
             paymentResponse.postValue(getApiResponseRepo.getResponsePaymentData(obj))
         } catch (e: Exception) {

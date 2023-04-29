@@ -9,7 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.arhamsoft.ilets.domain.repositories.GetApiResponseRepo
 import com.google.gson.Gson
+import com.noonpayments.paymentsdk.Utils.CommonMethods
 import com.noonpayments.paymentsdk.Utils.CommonMethods.cancelledOrderJSON
+import com.noonpayments.paymentsdk.Utils.CommonMethods.makeRequestBodyParam
 import com.noonpayments.paymentsdk.Utils.URLs.authHeader
 import com.noonpayments.paymentsdk.Utils.URLs.finalBaseUrl
 import com.noonpayments.paymentsdk.ViewModel.ApiCallingViewModel
@@ -69,8 +71,7 @@ open class BaseActivity : AppCompatActivity() {
 
     fun callCancelAPI(orderNumber: String) {
         val json = cancelledOrderJSON(orderNumber)
-        val mediaType = "application/json; charset=utf-8".toMediaType()
-        val body = json.toRequestBody(mediaType)
+        val body = makeRequestBodyParam(json)
         lifecycleScope.launch(Dispatchers.IO) {
             apiCallingViewModel.callCancelApi(body)
         }

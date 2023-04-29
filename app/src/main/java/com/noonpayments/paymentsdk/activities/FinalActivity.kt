@@ -24,6 +24,7 @@ import com.noonpayments.paymentsdk.R
 import com.noonpayments.paymentsdk.Utils.CommonMethods.encrypt
 import com.noonpayments.paymentsdk.Utils.CommonMethods.getJSONDouble
 import com.noonpayments.paymentsdk.Utils.CommonMethods.getJSONString
+import com.noonpayments.paymentsdk.Utils.CommonMethods.makeRequestBodyParam
 import com.noonpayments.paymentsdk.Utils.URLs
 import com.noonpayments.paymentsdk.Utils.URLs.baseClient
 import com.noonpayments.paymentsdk.Utils.URLs.finalBaseUrl
@@ -37,6 +38,8 @@ import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
@@ -237,16 +240,10 @@ class FinalActivity : BaseActivity() {
             responseTransactionId = ""
             val signature: String = createSignature()
             val json: String = createAddPaymentJSON(signature)
-
-//            var url = NoonPaymentsAPIConfig.NOON_URL_LIVE_ORDER
-//            if (data.paymentMode == PaymentMode.TEST) url =
-//                NoonPaymentsAPIConfig.NOON_URL_TEST_ORDER
-//            finalBaseUrl = url
-
+            val body = makeRequestBodyParam(json)
             lifecycleScope.launch {
-                apiCallingViewModel.callPaymentApi(json)
+                apiCallingViewModel.callPaymentApi(body)
             }
-//            postApi(url, json)
         } catch (ex: Exception) {
 //            ex.printStackTrace();
         }
@@ -545,11 +542,6 @@ class FinalActivity : BaseActivity() {
     }
 
     private fun validateTransacton(response: String) {
-//        var url = NoonPaymentsAPIConfig.NOON_URL_LIVE_ORDER
-//        if (data.paymentMode == PaymentMode.TEST) url = NoonPaymentsAPIConfig.NOON_URL_TEST_ORDER
-//        url += data.orderId
-//        get(url)
-//        URLs.finalBaseUrl = url
         lifecycleScope.launch {
             apiCallingViewModel.callFinalPaymentApi(data.orderId)
         }

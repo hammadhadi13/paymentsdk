@@ -9,7 +9,7 @@ class GetApiResponseRepo(private val restApi: RestApi) {
 
     suspend fun getResponseData(obj:RequestBody) = restApi.callCancel(obj)
 
-    suspend fun getResponsePaymentData(obj:String) = restApi.callPayment(obj)
+    suspend fun getResponsePaymentData(obj:RequestBody) = restApi.callPayment(obj)
 
     suspend fun getResponseFinalPaymentData(orderId:String) = restApi.callFinalApi(orderId)
 }

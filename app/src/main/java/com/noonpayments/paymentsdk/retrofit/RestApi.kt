@@ -16,7 +16,7 @@ interface RestApi {
 
     @POST(URLs.order)
     suspend fun callPayment(
-        @Body data: String
+        @Body data: RequestBody
     ): ResponseModel
 
     @GET("order/{post_id}")

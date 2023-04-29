@@ -1,7 +1,9 @@
 package com.noonpayments.paymentsdk.Utils
 
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.security.KeyFactory
 import java.security.spec.X509EncodedKeySpec
@@ -74,6 +76,11 @@ object CommonMethods {
         } catch (ex: java.lang.Exception) {
             ""
         }
+    }
+
+    fun makeRequestBodyParam(json:String):RequestBody{
+        val mediaType = "application/json; charset=utf-8".toMediaType()
+        return json.toRequestBody(mediaType)
     }
 
 }
