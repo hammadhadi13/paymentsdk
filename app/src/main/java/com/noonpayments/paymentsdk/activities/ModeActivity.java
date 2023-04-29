@@ -11,10 +11,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -23,14 +19,13 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 
 import com.google.gson.Gson;
+import com.noonpayments.paymentsdk.Base.BaseActivity;
 import com.noonpayments.paymentsdk.R;
 import com.noonpayments.paymentsdk.databinding.ActivityModeBinding;
 import com.noonpayments.paymentsdk.helpers.Helper;
 import com.noonpayments.paymentsdk.models.NoonPaymentsCard;
-import com.noonpayments.paymentsdk.models.NoonPaymentsData;
 import com.noonpayments.paymentsdk.models.NoonPaymentsResponse;
 import com.noonpayments.paymentsdk.models.NoonPaymentsSetup;
-import com.noonpayments.paymentsdk.models.NoonPaymentsUI;
 
 import java.util.ArrayList;
 
@@ -49,9 +44,10 @@ public class ModeActivity extends BaseActivity {
 
         // get context to set language...
         if (getIntent().getStringExtra("lang") != null) {
-            language = getIntent().getStringExtra("lang");
+            String lang = getIntent().getStringExtra("lang");
+            setLanguage(lang);
         }
-        context = setLocale(this, language);
+        context = setLocale(this, getLanguage());
 
         Window window = getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();

@@ -12,37 +12,21 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.noonpayments.paymentsdk.Base.BaseActivity;
 import com.noonpayments.paymentsdk.R;
 import com.noonpayments.paymentsdk.Utils.CommonMethods;
 import com.noonpayments.paymentsdk.databinding.ActivityNewCardBinding;
 import com.noonpayments.paymentsdk.helpers.Helper;
-import com.noonpayments.paymentsdk.models.NoonPaymentsData;
-import com.noonpayments.paymentsdk.models.NoonPaymentsSetup;
-import com.noonpayments.paymentsdk.models.NoonPaymentsUI;
 
 import java.util.Arrays;
 import java.util.Calendar;
 
 public class NewCardActivity extends BaseActivity {
 
-
-    //    RelativeLayout dialogMode, ccBox, paymentBox, paynowBox;
-//    TextView txtBack, txtCardNumber, txtCardName, txtExp, txtCVV, txtPay, txtAmount, txtPayNow, txtAddNewCard,
-//            txtCardError, txtExpiryError, txtCVVError, txtCardNameError;
-//    EditText edtCardNumber, edtCardName, edtExp, edtCVV;
-//    ImageView viewBack, viewCard, viewLogo;
-//    CheckBox checkBox;
-//    ImageButton btnCancel;
     int validationStatus = 0;
     String validationMessage = "";
     Context context;
@@ -58,7 +42,7 @@ public class NewCardActivity extends BaseActivity {
         setFinishOnTouchOutside(false);
 
         // get context to set language...
-        context = setLocale(this, language);
+        context = setLocale(this, getLanguage());
 
         Window window = getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
@@ -113,6 +97,7 @@ public class NewCardActivity extends BaseActivity {
         userUI.setupLogo(binding.viewLogo);
 
     }
+
     private void setTextColours() {
         //text colours
         binding.txtBack.setTextColor(userUI.getPaymentOptionHeadingForeground());
@@ -517,7 +502,7 @@ public class NewCardActivity extends BaseActivity {
         }
 
         //check if the year and month are correct
-        Intent in = new Intent(this, FinishActivity.class);
+        Intent in = new Intent(this, FinalActivity.class);
         in.putExtra("cardnumber", cardNumber);
         in.putExtra("cardname", cardName);
         in.putExtra("exp", exp);

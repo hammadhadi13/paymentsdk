@@ -12,7 +12,6 @@ import android.webkit.WebViewClient;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.noonpayments.paymentsdk.R;
 import com.noonpayments.paymentsdk.databinding.ActivityDsBinding;
 
 import java.util.Set;

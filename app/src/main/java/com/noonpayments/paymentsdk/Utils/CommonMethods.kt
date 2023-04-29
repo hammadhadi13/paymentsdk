@@ -1,5 +1,7 @@
 package com.noonpayments.paymentsdk.Utils
 
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
 import org.json.JSONObject
 import java.security.KeyFactory
 import java.security.spec.X509EncodedKeySpec
@@ -73,4 +75,5 @@ object CommonMethods {
             ""
         }
     }
+
 }

@@ -6,12 +6,14 @@
         android:name="android.permission.INTERNET"
         android:required="true" />
 
-
     <application
-        android:usesCleartextTraffic="true"
-        android:supportsRtl="true">
+        android:supportsRtl="true"
+        android:usesCleartextTraffic="true">
         <activity
-            android:name=".activities.DSActivity" />
+            android:name=".activities.FinalActivity"
+            android:exported="false"
+            android:theme="@style/MyDialogTheme" />
+        <activity android:name=".activities.DSActivity" />
         <activity
             android:name=".activities.CardActivity"
             android:screenOrientation="portrait"
@@ -24,11 +26,10 @@
             android:name=".activities.NewCardActivity"
             android:screenOrientation="portrait"
             android:theme="@style/MyDialogTheme" />
-        <activity
-            android:name=".activities.FinishActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/MyDialogTheme" />
-
+        <!--        <activity-->
+        <!--            android:name=".activities.FinishActivity"-->
+        <!--            android:screenOrientation="portrait"-->
+        <!--            android:theme="@style/MyDialogTheme" />-->
     </application>
 
 </manifest>

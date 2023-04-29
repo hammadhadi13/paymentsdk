@@ -4,13 +4,16 @@ import okhttp3.OkHttpClient
 
 object URLs {
 
-//     var authHeader = "Key_Test UGx1Z2luLlBsdWdpbl90ZXN0OmRmMDU1YTFiMjU4YzQ1MzRiZWZmNjlkMmFmN2JlOTk2"
-
+     var authHeader = ""
+    var finalBaseUrl =""
 
      const val NOON_URL_TEST = "https://api-test.noonpayments.com/payment/v1/"
      const val NOON_URL_LIVE = "https://api.noonpayments.com/payment/v1/"
-     const val NOON_URL_TEST_ORDER = NOON_URL_TEST + "order"
-     const val NOON_URL_LIVE_ORDER = NOON_URL_LIVE + "order"
+     const val NOON_URL_TEST_ORDER = NOON_URL_TEST
+     const val NOON_URL_LIVE_ORDER = NOON_URL_LIVE
+
+
+    const val order = "order/"
 
 
     val baseClient: OkHttpClient = getApiClient()

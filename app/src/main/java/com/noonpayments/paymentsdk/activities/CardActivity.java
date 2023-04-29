@@ -27,14 +27,12 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.noonpayments.paymentsdk.Base.BaseActivity;
 import com.noonpayments.paymentsdk.R;
 import com.noonpayments.paymentsdk.databinding.ActivityCardBinding;
 import com.noonpayments.paymentsdk.helpers.Helper;
 import com.noonpayments.paymentsdk.models.Language;
 import com.noonpayments.paymentsdk.models.NoonPaymentsCard;
-import com.noonpayments.paymentsdk.models.NoonPaymentsData;
-import com.noonpayments.paymentsdk.models.NoonPaymentsSetup;
-import com.noonpayments.paymentsdk.models.NoonPaymentsUI;
 
 import java.util.ArrayList;
 
@@ -60,7 +58,7 @@ public class CardActivity extends BaseActivity {
         setFinishOnTouchOutside(false);
 
 
-        context = setLocale(this, language);
+        context = setLocale(this, getLanguage());
 
         Window window = getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
@@ -216,7 +214,7 @@ public class CardActivity extends BaseActivity {
 
         NoonPaymentsCard card = savedCards.get(selectedCard);
 
-        Intent in = new Intent(this, FinishActivity.class);
+        Intent in = new Intent(this, FinalActivity.class);
         in.putExtra("cvv", edtCVVList.get(selectedCard).getText().toString());
         in.putExtra("cardtoken", card.getCardToken());
         in.putExtra("addnewcard", false);
