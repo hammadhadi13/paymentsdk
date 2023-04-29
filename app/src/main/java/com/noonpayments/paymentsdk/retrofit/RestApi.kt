@@ -23,7 +23,7 @@ interface RestApi {
     @GET("order/{order_Id}")
     suspend fun callFinalApi(
         @Path("order_Id") orderId: String
-    ): ResponseModel
+    ): PaymentResponseModel
 
 
 //

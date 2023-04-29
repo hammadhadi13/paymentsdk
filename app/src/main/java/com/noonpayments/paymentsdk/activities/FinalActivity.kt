@@ -159,7 +159,7 @@ class FinalActivity : BaseActivity() {
 //            if (response.isSuccessful) {
             val responseStr = model.toString()
             Log.d("getFinalPaymentResponse", "setObserver: $model")
-            validateOrder(responseStr)
+            validateOrder(model)
 //            } else {
 //                // Request not successful
 //                noonPaymentsResponse.setDetails(Helper.STATUS_FAILURE, response.message, "", "")
@@ -319,32 +319,35 @@ class FinalActivity : BaseActivity() {
         }
     }
 
-    private fun validateOrder(response: String): Boolean {
+    private fun validateOrder(response: PaymentResponseModel): Boolean {
         val isValid = false
         try {
             var status = Helper.STATUS_FAILURE
             var message: String? = ""
-            val jsonObject = JSONObject(response)
-            val resultCode = jsonObject.getInt("resultCode")
-            message = getJSONString(jsonObject, "message")
+//            val jsonObject = JSONObject(response)
+            val resultCode = response.resultCode
+
+//            message = getJSONString(jsonObject, "message")
+            message = response.message.toString()
             if (resultCode == 0) {
                 //check amount and status
-                val jsonOrder = jsonObject.getJSONObject("result").getJSONObject("order")
-                val orderStatus = getJSONString(jsonOrder, "status")
-                val orderReference = getJSONString(jsonOrder, "reference")
+                val jsonOrder = response.result?.order!!
+                val orderStatus = jsonOrder.status.toString()
+//                    getJSONString(jsonOrder, "status")
+                val orderReference = jsonOrder.reference.toString()
+//                    getJSONString(jsonOrder, "reference")
                 val amount = if (data.paymentType.equals(
                         PaymentType.SALE.toString(),
                         ignoreCase = true
                     )
-                ) getJSONDouble(jsonOrder, "totalSalesAmount") else getJSONDouble(
-                    jsonOrder,
-                    "totalAuthorizedAmount"
-                )
-                val jsonTransactions =
-                    jsonObject.getJSONObject("result").getJSONArray("transactions")
+                ) jsonOrder.totalSalesAmount else jsonOrder.totalAuthorizedAmount
+
+                val jsonTransactions = response.result?.transaction
+//                    jsonObject.getJSONObject("result").getJSONArray("transactions")
                 var transactionStatus: String? = ""
-                if (jsonTransactions.length() > 0) {
-                    transactionStatus = getJSONString(jsonTransactions.getJSONObject(0), "status")
+                if (jsonTransactions != null) {
+                    transactionStatus = jsonTransactions.status
+//                        getJSONString(jsonTransactions.getJSONObject(0), "status")
                 }
                 if (orderStatus.equals(PaymentStatus.CANCELLED.toString(), ignoreCase = true)) {
                     status = Helper.STATUS_CANCELLED
@@ -353,9 +356,9 @@ class FinalActivity : BaseActivity() {
                 } else if (orderStatus.equals(
                         PaymentStatus.FAILED.toString(),
                         ignoreCase = true
-                    ) || orderStatus!!.uppercase(
+                    ) || orderStatus.uppercase(
                         Locale.getDefault()
-                    ) == PaymentStatus.EXPIRED.toString() || orderStatus!!.uppercase(
+                    ) == PaymentStatus.EXPIRED.toString() || orderStatus.uppercase(
                         Locale.getDefault()
                     ) == PaymentStatus.REJECTED.toString()
                 ) {
@@ -370,42 +373,46 @@ class FinalActivity : BaseActivity() {
                         if (data.paymentType.equals(
                                 PaymentType.SALE.toString(),
                                 ignoreCase = true
-                            ) && amount >= data.amount || data.paymentType.equals(
+                            ) && amount!! >= data.amount || data.paymentType.equals(
                                 PaymentType.AUTHORIZE.toString(),
                                 ignoreCase = true
-                            ) && amount >= data.amount || data.paymentType.equals(
+                            ) && amount!! >= data.amount || data.paymentType.equals(
                                 "Authorize,Sale",
                                 ignoreCase = true
-                            ) && amount >= data.amount
+                            ) && amount!! >= data.amount
                         ) {
                             status = Helper.STATUS_SUCCESS
                             message = context!!.resources.getString(R.string.payment_success)
-                            responseTransactionId =
-                                getJSONString(
-                                    jsonObject.getJSONObject("result").getJSONArray("transactions")
-                                        .getJSONObject(0), "id"
-                                )!!
+                            responseTransactionId = jsonTransactions?.id.toString()
+//                                getJSONString(
+//                                    jsonObject.getJSONObject("result").getJSONArray("transactions")
+//                                        .getJSONObject(0), "id"
+//                                )!!
 
                             //set the token values
                             if (data.isAllowCardTokenization) {
-                                if (jsonObject.getJSONObject("result").has("paymentDetails") &&
-                                    jsonObject.getJSONObject("result")
-                                        .getJSONObject("paymentDetails").has("tokenIdentifier")
-                                ) {
+                                if (response.result!!.paymentDetails != null)
+//                                if (jsonObject.getJSONObject("result").has("paymentDetails") &&
+//                                    jsonObject.getJSONObject("result")
+//                                        .getJSONObject("paymentDetails").has("tokenIdentifier")
+//                                )
+                                {
                                     responseCardToken =
-                                        getJSONString(
-                                            jsonObject.getJSONObject("result")
-                                                .getJSONObject("paymentDetails"), "tokenIdentifier"
-                                        )!!
-                                    responseCardNumber =
-                                        getJSONString(
-                                            jsonObject.getJSONObject("result")
-                                                .getJSONObject("paymentDetails"), "paymentInfo"
-                                        )!!
-                                    val cn = getJSONString(
-                                        jsonObject.getJSONObject("result")
-                                            .getJSONObject("paymentDetails"), "paymentInfo"
-                                    )
+                                        response.result!!.paymentDetails?.tokenIdentifier.toString()
+//                                        getJSONString(
+//                                            jsonObject.getJSONObject("result")
+//                                                .getJSONObject("paymentDetails"), "tokenIdentifier"
+//                                        )!!
+                                    responseCardNumber =response.result!!.paymentDetails?.paymentInfo.toString()
+//                                        getJSONString(
+//                                            jsonObject.getJSONObject("result")
+//                                                .getJSONObject("paymentDetails"), "paymentInfo"
+//                                        )!!
+                                    val cn =response.result!!.paymentDetails?.paymentInfo.toString()
+//                                        getJSONString(
+//                                        jsonObject.getJSONObject("result")
+//                                            .getJSONObject("paymentDetails"), "paymentInfo"
+//                                    )
                                     responseCardType = Helper.getCardType(cn, data.currency)
                                 }
                             }
@@ -436,7 +443,7 @@ class FinalActivity : BaseActivity() {
                         Helper.STATUS_SUCCESS,
                         message,
                         responseTransactionId,
-                        response,
+                        response.toString(),
                         responseCardNumber,
                         responseCardType,
                         responseCardToken
@@ -446,7 +453,7 @@ class FinalActivity : BaseActivity() {
                         Helper.STATUS_SUCCESS,
                         message,
                         responseTransactionId,
-                        response
+                        response.toString()
                     )
                 }
                 displayResult(
@@ -456,14 +463,14 @@ class FinalActivity : BaseActivity() {
             } else {
                 if (message!!.isEmpty()) message =
                     context!!.resources.getString(R.string.payment_failed)
-                noonPaymentsResponse.setDetails(Helper.STATUS_FAILURE, message, "", response)
+                noonPaymentsResponse.setDetails(Helper.STATUS_FAILURE, message, "", response.toString())
                 displayResult(
                     false, context!!.resources.getString(R.string.payment_failed),
                     message
                 )
             }
         } catch (e: JSONException) {
-            noonPaymentsResponse.setDetails(Helper.STATUS_FAILURE, e.message, "", response)
+            noonPaymentsResponse.setDetails(Helper.STATUS_FAILURE, e.message, "", response.toString())
             displayResult(false, context!!.resources.getString(R.string.payment_failed), e.message)
             //            e.printStackTrace();
         }

@@ -11,7 +11,7 @@ class ApiCallingViewModel(private val getApiResponseRepo: GetApiResponseRepo) : 
 
     private var cancelResponse: MutableLiveData<ResponseModel> = MutableLiveData()
     private var paymentResponse: MutableLiveData<PaymentResponseModel> = MutableLiveData()
-    private var finalPaymentResponse: MutableLiveData<ResponseModel> = MutableLiveData()
+    private var finalPaymentResponse: MutableLiveData<PaymentResponseModel> = MutableLiveData()
     private var errorResponse: MutableLiveData<String> = MutableLiveData()
 
     fun getCancelResponse(): MutableLiveData<ResponseModel> {
@@ -26,7 +26,7 @@ class ApiCallingViewModel(private val getApiResponseRepo: GetApiResponseRepo) : 
         return errorResponse
     }
 
-    fun getFinalPaymentResponse():MutableLiveData<ResponseModel>{
+    fun getFinalPaymentResponse():MutableLiveData<PaymentResponseModel>{
         return  finalPaymentResponse
     }
 
