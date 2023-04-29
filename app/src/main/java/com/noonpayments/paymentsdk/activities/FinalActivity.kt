@@ -178,6 +178,7 @@ class FinalActivity : BaseActivity() {
             object : ActivityResultCallback<ActivityResult?> {
                 override fun onActivityResult(result: ActivityResult?) {
                     if (result?.resultCode == RESULT_OK) {
+                        Log.d("onActivityResult", "onActivityResult: ${result.data.toString()}")
                         assert(result.data != null)
                         val rOrderId = result.data!!.getStringExtra("orderid")
                         val rMerchantId = result.data!!.getStringExtra("merchantid")
