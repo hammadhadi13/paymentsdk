@@ -142,7 +142,7 @@ class FinalActivity : BaseActivity() {
 //            if (model!=null) {
             val responseStr = model.toString()
             Log.d("getPaymentResponse", "setObserver: ${model.toString()}")
-            processResponse(responseStr)
+            processResponse(model)
 
 //            } else {
 //                // Request not successful
@@ -201,7 +201,7 @@ class FinalActivity : BaseActivity() {
                             )
                         } else {
                             //validate the order by calling inquiry
-                            validateTransacton("")
+                            validateTransacton()
                         }
                     }
                 }
@@ -238,24 +238,29 @@ class FinalActivity : BaseActivity() {
         }
     }
 
-    private fun processResponse(response: String) {
+    private fun processResponse(response: PaymentResponseModel) {
         try {
             val success = false
             var resultCode = -1
-            responseJson = response
-            val jsonObject = JSONObject(response)
-            resultCode = jsonObject.getInt("resultCode")
-            responseMessage = getJSONString(jsonObject, "message")!!
+            responseJson = response.toString()
+//            val jsonObject = JSONObject(response)
+//            resultCode = jsonObject.getInt("resultCode")
+            resultCode = response.resultCode!!
+//            responseMessage = getJSONString(jsonObject, "message")!!
+            responseMessage = response.message.toString()
             if (resultCode == 0) {
-                if (jsonObject.getJSONObject("result")
-                        .has("nextActions") && jsonObject.getJSONObject("result")
-                        .getString("nextActions") == "CHECK_3DS_ENROLLMENT"
-                ) {
+                if (response.result?.nextActions == "CHECK_3DS_ENROLLMENT")
+//                if (jsonObject.getJSONObject("result")
+//                        .has("nextActions") && jsonObject.getJSONObject("result")
+//                        .getString("nextActions") == "CHECK_3DS_ENROLLMENT"
+//                )
+                {
                     //get post url and open browser
-                    val url3DS = getJSONString(
-                        jsonObject.getJSONObject("result").getJSONObject("checkoutData"), "postUrl"
-                    )
-                    if (url3DS!!.isEmpty() == false) {
+                    val url3DS = response.result!!.checkoutData?.postUrl.toString()
+//                        getJSONString(
+//                        jsonObject.getJSONObject("result").getJSONObject("checkoutData"), "postUrl"
+//                    )
+                    if (url3DS.isNotEmpty()) {
                         do3DSflow(url3DS)
                     } else {
                         val responseMessage =
@@ -264,7 +269,7 @@ class FinalActivity : BaseActivity() {
                             Helper.STATUS_FAILURE,
                             responseMessage,
                             "",
-                            response
+                            response.toString()
                         )
                         displayResult(
                             false,
@@ -274,10 +279,11 @@ class FinalActivity : BaseActivity() {
                     }
                 } else {
                     //NON 3DS flow
-                    responseTransactionId = getJSONString(
-                        jsonObject.getJSONObject("result").getJSONObject("transaction"), "id"
-                    )!!
-                    validateTransacton(response)
+                    responseTransactionId = response.result?.transaction?.id.toString()
+//                        getJSONString(
+//                        jsonObject.getJSONObject("result").getJSONObject("transaction"), "id"
+//                    )!!
+                    validateTransacton()
                 }
             } else {
                 Log.d("watchingError", "processResponse: this is due to 0")
@@ -285,7 +291,7 @@ class FinalActivity : BaseActivity() {
                     Helper.STATUS_FAILURE,
                     responseMessage,
                     "",
-                    response
+                    response.toString()
                 )
                 displayResult(
                     false, context!!.resources.getString(R.string.payment_failed),
@@ -293,13 +299,16 @@ class FinalActivity : BaseActivity() {
                 )
             }
         } catch (e: JSONException) {
-            Log.d("watchingError", "processResponse: this is due to exception ${e.message.toString()}")
+            Log.d(
+                "watchingError",
+                "processResponse: this is due to exception ${e.message.toString()}"
+            )
 
             noonPaymentsResponse.setDetails(
                 Helper.STATUS_FAILURE,
                 "Exception: " + e.message,
                 "",
-                response
+                response.toString()
             )
             displayResult(
                 false, context!!.resources.getString(R.string.payment_failed),
@@ -460,7 +469,7 @@ class FinalActivity : BaseActivity() {
         return isValid
     }
 
-    private fun validateTransacton(response: String) {
+    private fun validateTransacton() {
         Log.d("callFinalPaymentApi", "validateTransacton: ${data.orderId}")
         lifecycleScope.launch {
             apiCallingViewModel.callFinalPaymentApi(data.orderId)

@@ -50,6 +50,10 @@ class PaymentResponseModel {
         @Expose
         var order: Order? = null
 
+        @SerializedName("checkoutData")
+        @Expose
+        var checkoutData: CheckoutData? = null
+
         @SerializedName("cvv")
         @Expose
         var cvv: Cvv? = null
@@ -159,6 +163,16 @@ class PaymentResponseModel {
         @SerializedName("channel")
         @Expose
         var channel: String? = null
+    }
+
+    class CheckoutData {
+        @SerializedName("postUrl")
+        @Expose
+        var postUrl: String? = null
+
+        @SerializedName("jsUrl")
+        @Expose
+        var jsUrl: String? = null
     }
 
     class PaymentDetails {
