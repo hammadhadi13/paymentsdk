@@ -9,13 +9,11 @@ import retrofit2.http.*
 
 interface RestApi {
 
-    @Headers("Content-Type: application/json")
     @POST(URLs.order)
     suspend fun callCancel(
-        @Body data: String
+        @Body data: RequestBody
     ): ResponseModel
 
-    @Headers("Content-Type: application/json")
     @POST(URLs.order)
     suspend fun callPayment(
         @Body data: String

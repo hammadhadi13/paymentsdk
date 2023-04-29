@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.arhamsoft.ilets.domain.repositories.GetApiResponseRepo
 import com.noonpayments.paymentsdk.models.ResponseModel
+import okhttp3.RequestBody
 
 class ApiCallingViewModel(private val getApiResponseRepo: GetApiResponseRepo) : ViewModel() {
 
@@ -28,7 +29,7 @@ class ApiCallingViewModel(private val getApiResponseRepo: GetApiResponseRepo) : 
         return  finalPaymentResponse
     }
 
-    suspend fun callCancelApi(obj:String) {
+    suspend fun callCancelApi(obj:RequestBody) {
         try {
             cancelResponse.postValue(getApiResponseRepo.getResponseData(obj))
         } catch (e: Exception) {

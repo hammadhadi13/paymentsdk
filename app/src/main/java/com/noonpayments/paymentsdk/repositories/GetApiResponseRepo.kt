@@ -7,7 +7,7 @@ import okhttp3.RequestBody
 
 class GetApiResponseRepo(private val restApi: RestApi) {
 
-    suspend fun getResponseData(obj:String) = restApi.callCancel(obj)
+    suspend fun getResponseData(obj:RequestBody) = restApi.callCancel(obj)
 
     suspend fun getResponsePaymentData(obj:String) = restApi.callPayment(obj)
 

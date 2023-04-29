@@ -14,9 +14,11 @@ import com.noonpayments.paymentsdk.helpers.Helper
 import com.noonpayments.paymentsdk.models.*
 import com.retech.yapiee.domain.retrofit.RetrofitClient.Companion.getInstance
 import kotlinx.coroutines.*
-import kotlinx.coroutines.Dispatchers.Main
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.util.*
-import kotlin.coroutines.Continuation
 
 open class BaseActivity : AppCompatActivity() {
 
@@ -28,7 +30,6 @@ open class BaseActivity : AppCompatActivity() {
     lateinit var data: NoonPaymentsData
     lateinit var noonPaymentsResponse: NoonPaymentsResponse
     lateinit var apiCallingViewModel: ApiCallingViewModel
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,10 +64,12 @@ open class BaseActivity : AppCompatActivity() {
         return activity
     }
 
-    fun callCancelAPI(orderNumber: String?) {
-        val json = cancelledOrderJSON(orderNumber!!)
+    fun callCancelAPI(orderNumber: String) {
+        val json = cancelledOrderJSON(orderNumber)
+        val mediaType = "application/json; charset=utf-8".toMediaType()
+        val body = json.toRequestBody(mediaType)
         lifecycleScope.launch(Dispatchers.IO) {
-            apiCallingViewModel.callCancelApi(json)
+            apiCallingViewModel.callCancelApi(body)
         }
     }
 
@@ -75,7 +78,6 @@ open class BaseActivity : AppCompatActivity() {
             if (model.resultCode != null) {
                 if (model.resultCode == 0) {
                     Toast.makeText(this, "Payment Cancelled!", Toast.LENGTH_LONG).show();
-
                 } else {
                     Toast.makeText(this, model.message.toString(), Toast.LENGTH_LONG).show();
 
