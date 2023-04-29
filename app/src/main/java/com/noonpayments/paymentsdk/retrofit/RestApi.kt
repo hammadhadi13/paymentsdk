@@ -9,7 +9,6 @@ import retrofit2.http.*
 
 interface RestApi {
 
-    @FormUrlEncoded
     @POST(URLs.order)
     suspend fun callCancel(
         @Body data: RequestBody

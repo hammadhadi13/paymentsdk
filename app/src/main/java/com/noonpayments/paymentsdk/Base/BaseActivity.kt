@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import com.arhamsoft.ilets.domain.repositories.GetApiResponseRepo
 import com.google.gson.Gson
 import com.noonpayments.paymentsdk.Utils.CommonMethods.cancelledOrderJSON
+import com.noonpayments.paymentsdk.Utils.URLs.authHeader
 import com.noonpayments.paymentsdk.Utils.URLs.finalBaseUrl
 import com.noonpayments.paymentsdk.ViewModel.ApiCallingViewModel
 import com.noonpayments.paymentsdk.helpers.Helper
@@ -53,6 +54,7 @@ open class BaseActivity : AppCompatActivity() {
         if (data.paymentMode == PaymentMode.TEST) url =
             NoonPaymentsAPIConfig.NOON_URL_TEST_ORDER
         finalBaseUrl = url
+        authHeader = data.authorizationHeader.toString()
     }
 
     fun setLocale(activity: Context, languageCode: String): Context {
