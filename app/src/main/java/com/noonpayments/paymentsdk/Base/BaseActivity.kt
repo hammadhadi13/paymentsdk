@@ -35,15 +35,15 @@ open class BaseActivity : AppCompatActivity() {
 
         mainHandler = Handler(this.mainLooper)
         helper = Helper()
-        setBaseUrl()
+
         //setup the UI
         setup = NoonPaymentsSetup.getInstance()
         userUI = setup.noonUI
         data = setup.noonData
         noonPaymentsResponse = NoonPaymentsResponse()
+        setBaseUrl()
         apiCallingViewModel = ApiCallingViewModel(GetApiResponseRepo(getInstance()))
         getObserver()
-
     }
 
     private fun setBaseUrl() {
