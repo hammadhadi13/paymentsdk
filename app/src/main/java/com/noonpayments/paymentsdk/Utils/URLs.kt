@@ -13,7 +13,7 @@ object URLs {
      const val NOON_URL_LIVE_ORDER = NOON_URL_LIVE
 
 
-    const val order = "order/"
+    const val order = "order"
 
 
     val baseClient: OkHttpClient = getApiClient()
