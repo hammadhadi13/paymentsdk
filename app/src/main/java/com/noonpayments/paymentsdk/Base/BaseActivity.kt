@@ -1,22 +1,23 @@
 package com.noonpayments.paymentsdk.Base
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.arhamsoft.ilets.domain.repositories.GetApiResponseRepo
+import com.google.gson.Gson
 import com.noonpayments.paymentsdk.Utils.CommonMethods.cancelledOrderJSON
 import com.noonpayments.paymentsdk.Utils.URLs.finalBaseUrl
 import com.noonpayments.paymentsdk.ViewModel.ApiCallingViewModel
 import com.noonpayments.paymentsdk.helpers.Helper
 import com.noonpayments.paymentsdk.models.*
 import com.retech.yapiee.domain.retrofit.RetrofitClient.Companion.getInstance
-import kotlinx.coroutines.*
-import okhttp3.MediaType
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.util.*
 
@@ -78,6 +79,13 @@ open class BaseActivity : AppCompatActivity() {
             if (model.resultCode != null) {
                 if (model.resultCode == 0) {
                     Toast.makeText(this, "Payment Cancelled!", Toast.LENGTH_LONG).show();
+
+                    val response = NoonPaymentsResponse()
+                    response.setDetails(Helper.STATUS_FAILURE, "Payment cancelled by user", "", "")
+                    val resultIntent = Intent()
+                    resultIntent.putExtra("noonresponse", Gson().toJson(response))
+                    setResult(RESULT_OK, resultIntent)
+                    finish()
                 } else {
                     Toast.makeText(this, model.message.toString(), Toast.LENGTH_LONG).show();
 

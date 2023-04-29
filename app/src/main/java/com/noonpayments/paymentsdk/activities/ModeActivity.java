@@ -124,12 +124,12 @@ public class ModeActivity extends BaseActivity {
         String yes = context.getResources().getString(R.string.yes);
         builder.setPositiveButton(yes, (dialog, which) -> {
             callCancelAPI(data.getOrderId());
-            NoonPaymentsResponse response = new NoonPaymentsResponse();
-            response.setDetails(Helper.STATUS_FAILURE, "Payment cancelled by user", "", "");
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra("noonresponse", new Gson().toJson(response));
-            setResult(Activity.RESULT_OK, resultIntent);
-            finish();
+//            NoonPaymentsResponse response = new NoonPaymentsResponse();
+//            response.setDetails(Helper.STATUS_FAILURE, "Payment cancelled by user", "", "");
+//            Intent resultIntent = new Intent();
+//            resultIntent.putExtra("noonresponse", new Gson().toJson(response));
+//            setResult(Activity.RESULT_OK, resultIntent);
+//            finish();
         });
 
         //No Button
