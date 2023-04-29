@@ -82,5 +82,4 @@ object CommonMethods {
         val mediaType = "application/json; charset=utf-8".toMediaType()
         return json.toRequestBody(mediaType)
     }
-
 }

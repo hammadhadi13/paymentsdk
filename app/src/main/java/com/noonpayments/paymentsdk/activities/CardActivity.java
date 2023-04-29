@@ -15,18 +15,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AlertDialog;
-
 import com.noonpayments.paymentsdk.Base.BaseActivity;
 import com.noonpayments.paymentsdk.R;
 import com.noonpayments.paymentsdk.databinding.ActivityCardBinding;

@@ -11,7 +11,6 @@ import android.view.Gravity
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
@@ -26,28 +25,17 @@ import com.noonpayments.paymentsdk.Utils.CommonMethods.getJSONDouble
 import com.noonpayments.paymentsdk.Utils.CommonMethods.getJSONString
 import com.noonpayments.paymentsdk.Utils.CommonMethods.makeRequestBodyParam
 import com.noonpayments.paymentsdk.Utils.URLs
-import com.noonpayments.paymentsdk.Utils.URLs.baseClient
-import com.noonpayments.paymentsdk.Utils.URLs.finalBaseUrl
 import com.noonpayments.paymentsdk.ViewModel.ApiCallingViewModel
 import com.noonpayments.paymentsdk.databinding.ActivityFinalBinding
 import com.noonpayments.paymentsdk.helpers.Helper
 import com.noonpayments.paymentsdk.models.*
 import com.retech.yapiee.domain.retrofit.RetrofitClient.Companion.getInstance
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import okhttp3.*
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONException
 import org.json.JSONObject
-import java.io.IOException
 import java.math.BigInteger
 import java.security.MessageDigest
 import java.util.*
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.CoroutineContext
 
 class FinalActivity : BaseActivity() {
 
@@ -153,7 +141,7 @@ class FinalActivity : BaseActivity() {
         apiCallingViewModel.getPaymentResponse().observe(this) { model ->
 //            if (model!=null) {
             val responseStr = model.toString()
-            Log.d("getPaymentResponse", "setObserver: $model")
+            Log.d("getPaymentResponse", "setObserver: ${model.toString()}")
             processResponse(responseStr)
 
 //            } else {
@@ -241,6 +229,7 @@ class FinalActivity : BaseActivity() {
             val signature: String = createSignature()
             val json: String = createAddPaymentJSON(signature)
             val body = makeRequestBodyParam(json)
+            Log.d("callPaymentApiPayLoad", "processPayment: $json")
             lifecycleScope.launch {
                 apiCallingViewModel.callPaymentApi(body)
             }
@@ -248,79 +237,6 @@ class FinalActivity : BaseActivity() {
 //            ex.printStackTrace();
         }
     }
-
-//    @Throws(IOException::class)
-//    private fun postApi(url: String, json: String) {
-//        val body: RequestBody = create(json, JSON)
-//        val header = data.authorizationHeader
-//        val request: Request = Builder()
-//            .url(url)
-//            .addHeader("Authorization", header)
-//            .post(body)
-//            .build()
-//        baseClient.newCall(request).enqueue(object : Callback {
-//            override fun onFailure(call: Call, e: IOException) {
-//                // Something went wrong
-//                noonPaymentsResponse.setDetails(Helper.STATUS_FAILURE, e.message, "", "")
-//                displayResult(
-//                    false,
-//                    context!!.resources.getString(R.string.payment_failed),
-//                    e.message
-//                )
-//            }
-//
-//            @Throws(IOException::class)
-//            override fun onResponse(call: Call, response: Response) {
-//                if (response.isSuccessful) {
-//                    val responseStr = response.body!!.string()
-//                    processResponse(responseStr)
-//                } else {
-//                    // Request not successful
-//                    noonPaymentsResponse.setDetails(Helper.STATUS_FAILURE, response.message, "", "")
-//                    displayResult(
-//                        false,
-//                        context!!.resources.getString(R.string.payment_failed),
-//                        response.message
-//                    )
-//                }
-//            }
-//        })
-//    }
-
-//    private operator fun get(url: String) {
-//        val header = data.authorizationHeader
-//        val request: Request = Builder()
-//            .url(url)
-//            .addHeader("Authorization", header)
-//            .build()
-//        baseClient.newCall(request).enqueue(object : Callback {
-//            override fun onFailure(call: Call, e: IOException) {
-//                // Something went wrong
-//                noonPaymentsResponse.setDetails(Helper.STATUS_FAILURE, e.message, "", "")
-//                displayResult(
-//                    false,
-//                    context!!.resources.getString(R.string.payment_failed),
-//                    e.message
-//                )
-//            }
-//
-//            @Throws(IOException::class)
-//            override fun onResponse(call: Call, response: Response) {
-//                if (response.isSuccessful) {
-//                    val responseStr = response.body!!.string()
-//                    validateOrder(responseStr)
-//                } else {
-//                    // Request not successful
-//                    noonPaymentsResponse.setDetails(Helper.STATUS_FAILURE, response.message, "", "")
-//                    displayResult(
-//                        false,
-//                        context!!.resources.getString(R.string.payment_failed),
-//                        response.message
-//                    )
-//                }
-//            }
-//        })
-//    }
 
     private fun processResponse(response: String) {
         try {
@@ -542,6 +458,7 @@ class FinalActivity : BaseActivity() {
     }
 
     private fun validateTransacton(response: String) {
+        Log.d("callFinalPaymentApi", "validateTransacton: ${data.orderId}")
         lifecycleScope.launch {
             apiCallingViewModel.callFinalPaymentApi(data.orderId)
         }

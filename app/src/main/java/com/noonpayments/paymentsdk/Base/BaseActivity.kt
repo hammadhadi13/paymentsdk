@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.arhamsoft.ilets.domain.repositories.GetApiResponseRepo
 import com.google.gson.Gson
-import com.noonpayments.paymentsdk.Utils.CommonMethods
 import com.noonpayments.paymentsdk.Utils.CommonMethods.cancelledOrderJSON
 import com.noonpayments.paymentsdk.Utils.CommonMethods.makeRequestBodyParam
 import com.noonpayments.paymentsdk.Utils.URLs.authHeader
@@ -20,8 +19,6 @@ import com.noonpayments.paymentsdk.models.*
 import com.retech.yapiee.domain.retrofit.RetrofitClient.Companion.getInstance
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.toRequestBody
 import java.util.*
 
 open class BaseActivity : AppCompatActivity() {
