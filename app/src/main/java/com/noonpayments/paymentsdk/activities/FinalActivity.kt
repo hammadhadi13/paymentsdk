@@ -280,6 +280,7 @@ class FinalActivity : BaseActivity() {
                     validateTransacton(response)
                 }
             } else {
+                Log.d("watchingError", "processResponse: this is due to 0")
                 noonPaymentsResponse.setDetails(
                     Helper.STATUS_FAILURE,
                     responseMessage,
@@ -292,6 +293,8 @@ class FinalActivity : BaseActivity() {
                 )
             }
         } catch (e: JSONException) {
+            Log.d("watchingError", "processResponse: this is due to exception ${e.message.toString()}")
+
             noonPaymentsResponse.setDetails(
                 Helper.STATUS_FAILURE,
                 "Exception: " + e.message,
