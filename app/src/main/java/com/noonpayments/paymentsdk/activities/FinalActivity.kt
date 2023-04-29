@@ -21,10 +21,7 @@ import com.google.gson.Gson
 import com.noonpayments.paymentsdk.Base.BaseActivity
 import com.noonpayments.paymentsdk.R
 import com.noonpayments.paymentsdk.Utils.CommonMethods.encrypt
-import com.noonpayments.paymentsdk.Utils.CommonMethods.getJSONDouble
-import com.noonpayments.paymentsdk.Utils.CommonMethods.getJSONString
 import com.noonpayments.paymentsdk.Utils.CommonMethods.makeRequestBodyParam
-import com.noonpayments.paymentsdk.Utils.URLs
 import com.noonpayments.paymentsdk.ViewModel.ApiCallingViewModel
 import com.noonpayments.paymentsdk.databinding.ActivityFinalBinding
 import com.noonpayments.paymentsdk.helpers.Helper
@@ -139,36 +136,15 @@ class FinalActivity : BaseActivity() {
             )
         }
         apiCallingViewModel.getPaymentResponse().observe(this) { model ->
-//            if (model!=null) {
             val responseStr = model.toString()
             Log.d("getPaymentResponse", "setObserver: ${model.toString()}")
             processResponse(model)
-
-//            } else {
-//                // Request not successful
-//                noonPaymentsResponse.setDetails(Helper.STATUS_FAILURE, model.message, "", "")
-//                displayResult(
-//                    false,
-//                    context!!.resources.getString(R.string.payment_failed),
-//                    response.message
-//                )
-//            }
         }
 
         apiCallingViewModel.getFinalPaymentResponse().observe(this) { model ->
-//            if (response.isSuccessful) {
             val responseStr = model.toString()
             Log.d("getFinalPaymentResponse", "setObserver: $model")
             validateOrder(model)
-//            } else {
-//                // Request not successful
-//                noonPaymentsResponse.setDetails(Helper.STATUS_FAILURE, response.message, "", "")
-//                displayResult(
-//                    false,
-//                    context!!.resources.getString(R.string.payment_failed),
-//                    response.message
-//                )
-//            }
         }
     }
 
@@ -244,23 +220,12 @@ class FinalActivity : BaseActivity() {
             val success = false
             var resultCode = -1
             responseJson = response.toString()
-//            val jsonObject = JSONObject(response)
-//            resultCode = jsonObject.getInt("resultCode")
             resultCode = response.resultCode!!
-//            responseMessage = getJSONString(jsonObject, "message")!!
             responseMessage = response.message.toString()
             if (resultCode == 0) {
-                if (response.result?.nextActions == "CHECK_3DS_ENROLLMENT")
-//                if (jsonObject.getJSONObject("result")
-//                        .has("nextActions") && jsonObject.getJSONObject("result")
-//                        .getString("nextActions") == "CHECK_3DS_ENROLLMENT"
-//                )
-                {
+                if (response.result?.nextActions == "CHECK_3DS_ENROLLMENT") {
                     //get post url and open browser
                     val url3DS = response.result!!.checkoutData?.postUrl.toString()
-//                        getJSONString(
-//                        jsonObject.getJSONObject("result").getJSONObject("checkoutData"), "postUrl"
-//                    )
                     if (url3DS.isNotEmpty()) {
                         do3DSflow(url3DS)
                     } else {
@@ -281,9 +246,6 @@ class FinalActivity : BaseActivity() {
                 } else {
                     //NON 3DS flow
                     responseTransactionId = response.result?.transaction?.id.toString()
-//                        getJSONString(
-//                        jsonObject.getJSONObject("result").getJSONObject("transaction"), "id"
-//                    )!!
                     validateTransacton()
                 }
             } else {
@@ -315,7 +277,6 @@ class FinalActivity : BaseActivity() {
                 false, context!!.resources.getString(R.string.payment_failed),
                 ""
             )
-            //            e.printStackTrace();
         }
     }
 
@@ -324,18 +285,13 @@ class FinalActivity : BaseActivity() {
         try {
             var status = Helper.STATUS_FAILURE
             var message: String? = ""
-//            val jsonObject = JSONObject(response)
             val resultCode = response.resultCode!!
-
-//            message = getJSONString(jsonObject, "message")
             message = response.message.toString()
             if (resultCode == 0) {
                 //check amount and status
                 val jsonOrder = response.result?.order!!
                 val orderStatus = jsonOrder.status.toString()
-//                    getJSONString(jsonOrder, "status")
                 val orderReference = jsonOrder.reference.toString()
-//                    getJSONString(jsonOrder, "reference")
                 val amount = if (data.paymentType.equals(
                         PaymentType.SALE.toString(),
                         ignoreCase = true
@@ -343,11 +299,9 @@ class FinalActivity : BaseActivity() {
                 ) jsonOrder.totalSalesAmount else jsonOrder.totalAuthorizedAmount
 
                 val jsonTransactions = response.result?.transactions
-//                    jsonObject.getJSONObject("result").getJSONArray("transactions")
                 var transactionStatus: String? = ""
                 if (jsonTransactions != null) {
                     transactionStatus = jsonTransactions[0].status
-//                        getJSONString(jsonTransactions.getJSONObject(0), "status")
                 }
                 if (orderStatus.equals(PaymentStatus.CANCELLED.toString(), ignoreCase = true)) {
                     status = Helper.STATUS_CANCELLED
@@ -384,35 +338,15 @@ class FinalActivity : BaseActivity() {
                             status = Helper.STATUS_SUCCESS
                             message = context!!.resources.getString(R.string.payment_success)
                             responseTransactionId = jsonTransactions!![0].id.toString()
-//                                getJSONString(
-//                                    jsonObject.getJSONObject("result").getJSONArray("transactions")
-//                                        .getJSONObject(0), "id"
-//                                )!!
-
                             //set the token values
                             if (data.isAllowCardTokenization) {
-                                if (response.result!!.paymentDetails != null)
-//                                if (jsonObject.getJSONObject("result").has("paymentDetails") &&
-//                                    jsonObject.getJSONObject("result")
-//                                        .getJSONObject("paymentDetails").has("tokenIdentifier")
-//                                )
-                                {
+                                if (response.result!!.paymentDetails != null) {
                                     responseCardToken =
                                         response.result!!.paymentDetails?.tokenIdentifier.toString()
-//                                        getJSONString(
-//                                            jsonObject.getJSONObject("result")
-//                                                .getJSONObject("paymentDetails"), "tokenIdentifier"
-//                                        )!!
-                                    responseCardNumber =response.result!!.paymentDetails?.paymentInfo.toString()
-//                                        getJSONString(
-//                                            jsonObject.getJSONObject("result")
-//                                                .getJSONObject("paymentDetails"), "paymentInfo"
-//                                        )!!
-                                    val cn =response.result!!.paymentDetails?.paymentInfo.toString()
-//                                        getJSONString(
-//                                        jsonObject.getJSONObject("result")
-//                                            .getJSONObject("paymentDetails"), "paymentInfo"
-//                                    )
+                                    responseCardNumber =
+                                        response.result!!.paymentDetails?.paymentInfo.toString()
+                                    val cn =
+                                        response.result!!.paymentDetails?.paymentInfo.toString()
                                     responseCardType = Helper.getCardType(cn, data.currency)
                                 }
                             }
@@ -463,16 +397,25 @@ class FinalActivity : BaseActivity() {
             } else {
                 if (message!!.isEmpty()) message =
                     context!!.resources.getString(R.string.payment_failed)
-                noonPaymentsResponse.setDetails(Helper.STATUS_FAILURE, message, "", response.toString())
+                noonPaymentsResponse.setDetails(
+                    Helper.STATUS_FAILURE,
+                    message,
+                    "",
+                    response.toString()
+                )
                 displayResult(
                     false, context!!.resources.getString(R.string.payment_failed),
                     message
                 )
             }
         } catch (e: JSONException) {
-            noonPaymentsResponse.setDetails(Helper.STATUS_FAILURE, e.message, "", response.toString())
+            noonPaymentsResponse.setDetails(
+                Helper.STATUS_FAILURE,
+                e.message,
+                "",
+                response.toString()
+            )
             displayResult(false, context!!.resources.getString(R.string.payment_failed), e.message)
-            //            e.printStackTrace();
         }
         return isValid
     }

@@ -1,8 +1,6 @@
 package com.retech.yapiee.domain.retrofit
 
 import com.noonpayments.paymentsdk.Utils.URLs
-import com.noonpayments.paymentsdk.models.NoonPaymentsAPIConfig
-import com.noonpayments.paymentsdk.models.PaymentMode
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

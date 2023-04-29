@@ -79,17 +79,15 @@ open class BaseActivity : AppCompatActivity() {
             if (model.resultCode != null) {
                 if (model.resultCode == 0) {
                     Toast.makeText(this, "Payment Cancelled!", Toast.LENGTH_LONG).show();
-
-                    val response = NoonPaymentsResponse()
-                    response.setDetails(Helper.STATUS_FAILURE, "Payment cancelled by user", "", "")
-                    val resultIntent = Intent()
-                    resultIntent.putExtra("noonresponse", Gson().toJson(response))
-                    setResult(RESULT_OK, resultIntent)
-                    finish()
                 } else {
                     Toast.makeText(this, model.message.toString(), Toast.LENGTH_LONG).show();
-
                 }
+                val response = NoonPaymentsResponse()
+                response.setDetails(Helper.STATUS_FAILURE, "Payment cancelled by user", "", "")
+                val resultIntent = Intent()
+                resultIntent.putExtra("noonresponse", Gson().toJson(response))
+                setResult(RESULT_OK, resultIntent)
+                finish()
             }
         }
 
